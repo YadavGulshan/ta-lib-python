@@ -30,9 +30,9 @@ with open(ta_func_header) as f:
             line = line[10:]
         line = line.strip()
         if tmp or \
-            line.startswith('TA_RetCode TA_') or \
-            line.startswith('int TA_'):
-            line = re.sub('/\*[^\*]+\*/', '', line) # strip comments
+                line.startswith('TA_RetCode TA_') or \
+                line.startswith('int TA_'):
+            line = re.sub('/\*[^\*]+\*/', '', line)  # strip comments
             tmp.append(line)
             if not line:
                 s = ' '.join(tmp)
@@ -191,6 +191,7 @@ cdef np.ndarray make_int_array(np.npy_intp length, int lookback):
 
 """)
 
+
 # cleanup variable names to make them more pythonic
 def cleanup(name):
     if name.startswith('in'):
@@ -200,10 +201,11 @@ def cleanup(name):
     else:
         return name.lower()
 
+
 # print functions
 names = []
 for f in functions:
-    if 'Lookback' in f: # skip lookback functions
+    if 'Lookback' in f:  # skip lookback functions
         continue
 
     i = f.index('(')
@@ -213,8 +215,12 @@ for f in functions:
 
     shortname = name[3:]
     names.append(shortname)
-    func_info = abstract.Function(shortname).info
-    defaults, documentation = abstract._get_defaults_and_docs(func_info)
+    try:
+        func_info = abstract.Function(shortname).info
+        defaults, documentation = abstract._get_defaults_and_docs(func_info)
+    except Exception as e:
+        print('Error: %s' % e, file=sys.stderr)
+        func_info, defaults, documentation = {}, {}, ""
 
     print('@wraparound(False)  # turn off relative indexing from end of lists')
     print('@boundscheck(False) # turn off bounds-checking for entire function')
@@ -243,21 +249,21 @@ for f in functions:
 
         elif var.startswith('opt'):
             var = cleanup(var)
-            default_arg = arg.split()[-1][len('optIn'):] # chop off typedef and 'optIn'
-            default_arg = default_arg[0].lower() + default_arg[1:] # lowercase first letter
+            default_arg = arg.split()[-1][len('optIn'):]  # chop off typedef and 'optIn'
+            default_arg = default_arg[0].lower() + default_arg[1:]  # lowercase first letter
 
             if arg.startswith('double'):
                 if default_arg in defaults:
                     print('double %s=%s' % (var, defaults[default_arg]), end=' ')
                 else:
-                    print('double %s=-4e37' % var, end=' ') # TA_REAL_DEFAULT
+                    print('double %s=-4e37' % var, end=' ')  # TA_REAL_DEFAULT
             elif arg.startswith('int'):
                 if default_arg in defaults:
                     print('int %s=%s' % (var, defaults[default_arg]), end=' ')
                 else:
-                    print('int %s=-2**31' % var, end=' ')   # TA_INTEGER_DEFAULT
+                    print('int %s=-2**31' % var, end=' ')  # TA_INTEGER_DEFAULT
             elif arg.startswith('TA_MAType'):
-                print('int %s=%s' % (var, defaults.get('matype', 0)), end=' ') # TA_MAType_SMA
+                print('int %s=%s' % (var, defaults.get('matype', 0)), end=' ')  # TA_MAType_SMA
             else:
                 assert False, arg
             if '[, ' not in docs:
@@ -269,7 +275,7 @@ for f in functions:
     if documentation:
         tmp_docs = []
         lower_case = False
-        documentation = documentation.split('\n')[2:] # discard abstract calling definition
+        documentation = documentation.split('\n')[2:]  # discard abstract calling definition
         for line in documentation:
             line = line.replace('Substraction', 'Subtraction')
             if 'prices' not in line and 'price' in line:
@@ -277,7 +283,7 @@ for f in functions:
             if not line or line.isspace():
                 tmp_docs.append('')
             else:
-                tmp_docs.append('    %s' % line) # add an indent of 4 spaces
+                tmp_docs.append('    %s' % line)  # add an indent of 4 spaces
         docs.append('\n\n')
         docs.append('\n'.join(tmp_docs))
         docs.append('\n    ')
@@ -328,7 +334,8 @@ for f in functions:
         print('    length = check_length%s(%s)' % (len(inputs), ', '.join(inputs)))
 
     # check for all input values are non-NaN
-    print('    begidx = check_begidx%s(length, %s)' % (len(inputs), ', '.join('<double*>(%s.data)' % s for s in inputs)))
+    print(
+        '    begidx = check_begidx%s(length, %s)' % (len(inputs), ', '.join('<double*>(%s.data)' % s for s in inputs)))
 
     print('    endidx = <int>length - begidx - 1')
     print('    lookback = begidx + lib.%s_Lookback(' % name, end=' ')
