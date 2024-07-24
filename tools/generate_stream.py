@@ -80,8 +80,14 @@ for f in functions:
 
     shortname = name[3:]
     names.append(shortname)
-    func_info = abstract.Function(shortname).info
-    defaults, documentation = abstract._get_defaults_and_docs(func_info)
+    try:
+        func_info = abstract.Function(shortname).info
+        defaults, documentation = abstract._get_defaults_and_docs(func_info)
+    except Exception as e:
+        defaults = {}
+        documentation = None
+        print('## %s: %s' % (shortname, e), file=sys.stderr)
+
 
     print('@wraparound(False)  # turn off relative indexing from end of lists')
     print('@boundscheck(False) # turn off bounds-checking for entire function')

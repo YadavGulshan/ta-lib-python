@@ -8,6 +8,35 @@ np.import_array() # Initialize the NumPy C API
 
 @wraparound(False)  # turn off relative indexing from end of lists
 @boundscheck(False) # turn off bounds-checking for entire function
+def stream_ACCBANDS( np.ndarray high not None , np.ndarray low not None , np.ndarray close not None , int timeperiod=-2**31 ):
+    """ ACCBANDS(high, low, close[, timeperiod=?])"""
+    cdef:
+        np.npy_intp length
+        TA_RetCode retCode
+        double* high_data
+        double* low_data
+        double* close_data
+        int outbegidx
+        int outnbelement
+        double outrealupperband
+        double outrealmiddleband
+        double outreallowerband
+    high = check_array(high)
+    high_data = <double*>high.data
+    low = check_array(low)
+    low_data = <double*>low.data
+    close = check_array(close)
+    close_data = <double*>close.data
+    length = check_length3(high, low, close)
+    outrealupperband = NaN
+    outrealmiddleband = NaN
+    outreallowerband = NaN
+    retCode = lib.TA_ACCBANDS( <int>(length) - 1 , <int>(length) - 1 , high_data , low_data , close_data , timeperiod , &outbegidx , &outnbelement , &outrealupperband , &outrealmiddleband , &outreallowerband )
+    _ta_check_success("TA_ACCBANDS", retCode)
+    return outrealupperband , outrealmiddleband , outreallowerband 
+
+@wraparound(False)  # turn off relative indexing from end of lists
+@boundscheck(False) # turn off bounds-checking for entire function
 def stream_ACOS( np.ndarray real not None ):
     """ ACOS(real)
 
@@ -31,6 +60,28 @@ def stream_ACOS( np.ndarray real not None ):
     outreal = NaN
     retCode = lib.TA_ACOS( <int>(length) - 1 , <int>(length) - 1 , real_data , &outbegidx , &outnbelement , &outreal )
     _ta_check_success("TA_ACOS", retCode)
+    return outreal 
+
+@wraparound(False)  # turn off relative indexing from end of lists
+@boundscheck(False) # turn off bounds-checking for entire function
+def stream_ABR( np.ndarray open not None , np.ndarray close not None , int timeperiod=-2**31 ):
+    """ ABR(open, close[, timeperiod=?])"""
+    cdef:
+        np.npy_intp length
+        TA_RetCode retCode
+        double* open_data
+        double* close_data
+        int outbegidx
+        int outnbelement
+        double outreal
+    open = check_array(open)
+    open_data = <double*>open.data
+    close = check_array(close)
+    close_data = <double*>close.data
+    length = check_length2(open, close)
+    outreal = NaN
+    retCode = lib.TA_ABR( <int>(length) - 1 , <int>(length) - 1 , open_data , close_data , timeperiod , &outbegidx , &outnbelement , &outreal )
+    _ta_check_success("TA_ABR", retCode)
     return outreal 
 
 @wraparound(False)  # turn off relative indexing from end of lists
@@ -398,6 +449,28 @@ def stream_ATR( np.ndarray high not None , np.ndarray low not None , np.ndarray 
 
 @wraparound(False)  # turn off relative indexing from end of lists
 @boundscheck(False) # turn off bounds-checking for entire function
+def stream_ADR( np.ndarray high not None , np.ndarray low not None , int timeperiod=-2**31 ):
+    """ ADR(high, low[, timeperiod=?])"""
+    cdef:
+        np.npy_intp length
+        TA_RetCode retCode
+        double* high_data
+        double* low_data
+        int outbegidx
+        int outnbelement
+        double outreal
+    high = check_array(high)
+    high_data = <double*>high.data
+    low = check_array(low)
+    low_data = <double*>low.data
+    length = check_length2(high, low)
+    outreal = NaN
+    retCode = lib.TA_ADR( <int>(length) - 1 , <int>(length) - 1 , high_data , low_data , timeperiod , &outbegidx , &outnbelement , &outreal )
+    _ta_check_success("TA_ADR", retCode)
+    return outreal 
+
+@wraparound(False)  # turn off relative indexing from end of lists
+@boundscheck(False) # turn off bounds-checking for entire function
 def stream_AVGPRICE( np.ndarray open not None , np.ndarray high not None , np.ndarray low not None , np.ndarray close not None ):
     """ AVGPRICE(open, high, low, close)
 
@@ -430,6 +503,25 @@ def stream_AVGPRICE( np.ndarray open not None , np.ndarray high not None , np.nd
     outreal = NaN
     retCode = lib.TA_AVGPRICE( <int>(length) - 1 , <int>(length) - 1 , open_data , high_data , low_data , close_data , &outbegidx , &outnbelement , &outreal )
     _ta_check_success("TA_AVGPRICE", retCode)
+    return outreal 
+
+@wraparound(False)  # turn off relative indexing from end of lists
+@boundscheck(False) # turn off bounds-checking for entire function
+def stream_AVGDEV( np.ndarray real not None , int timeperiod=-2**31 ):
+    """ AVGDEV(real[, timeperiod=?])"""
+    cdef:
+        np.npy_intp length
+        TA_RetCode retCode
+        double* real_data
+        int outbegidx
+        int outnbelement
+        double outreal
+    real = check_array(real)
+    real_data = <double*>real.data
+    length = real.shape[0]
+    outreal = NaN
+    retCode = lib.TA_AVGDEV( <int>(length) - 1 , <int>(length) - 1 , real_data , timeperiod , &outbegidx , &outnbelement , &outreal )
+    _ta_check_success("TA_AVGDEV", retCode)
     return outreal 
 
 @wraparound(False)  # turn off relative indexing from end of lists
@@ -3275,6 +3367,28 @@ def stream_HT_TRENDMODE( np.ndarray real not None ):
 
 @wraparound(False)  # turn off relative indexing from end of lists
 @boundscheck(False) # turn off bounds-checking for entire function
+def stream_IMI( np.ndarray open not None , np.ndarray close not None , int timeperiod=-2**31 ):
+    """ IMI(open, close[, timeperiod=?])"""
+    cdef:
+        np.npy_intp length
+        TA_RetCode retCode
+        double* open_data
+        double* close_data
+        int outbegidx
+        int outnbelement
+        double outreal
+    open = check_array(open)
+    open_data = <double*>open.data
+    close = check_array(close)
+    close_data = <double*>close.data
+    length = check_length2(open, close)
+    outreal = NaN
+    retCode = lib.TA_IMI( <int>(length) - 1 , <int>(length) - 1 , open_data , close_data , timeperiod , &outbegidx , &outnbelement , &outreal )
+    _ta_check_success("TA_IMI", retCode)
+    return outreal 
+
+@wraparound(False)  # turn off relative indexing from end of lists
+@boundscheck(False) # turn off bounds-checking for entire function
 def stream_KAMA( np.ndarray real not None , int timeperiod=-2**31 ):
     """ KAMA(real[, timeperiod=?])
 
@@ -4284,6 +4398,28 @@ def stream_PPO( np.ndarray real not None , int fastperiod=-2**31 , int slowperio
 
 @wraparound(False)  # turn off relative indexing from end of lists
 @boundscheck(False) # turn off bounds-checking for entire function
+def stream_PVT( np.ndarray close not None , np.ndarray volume not None , int timeperiod=-2**31 ):
+    """ PVT(close, volume[, timeperiod=?])"""
+    cdef:
+        np.npy_intp length
+        TA_RetCode retCode
+        double* close_data
+        double* volume_data
+        int outbegidx
+        int outnbelement
+        double outreal
+    close = check_array(close)
+    close_data = <double*>close.data
+    volume = check_array(volume)
+    volume_data = <double*>volume.data
+    length = check_length2(close, volume)
+    outreal = NaN
+    retCode = lib.TA_PVT( <int>(length) - 1 , <int>(length) - 1 , close_data , volume_data , timeperiod , &outbegidx , &outnbelement , &outreal )
+    _ta_check_success("TA_PVT", retCode)
+    return outreal 
+
+@wraparound(False)  # turn off relative indexing from end of lists
+@boundscheck(False) # turn off bounds-checking for entire function
 def stream_ROC( np.ndarray real not None , int timeperiod=-2**31 ):
     """ ROC(real[, timeperiod=?])
 
@@ -5245,4 +5381,28 @@ def stream_WMA( np.ndarray real not None , int timeperiod=-2**31 ):
     retCode = lib.TA_WMA( <int>(length) - 1 , <int>(length) - 1 , real_data , timeperiod , &outbegidx , &outnbelement , &outreal )
     _ta_check_success("TA_WMA", retCode)
     return outreal 
+
+@wraparound(False)  # turn off relative indexing from end of lists
+@boundscheck(False) # turn off bounds-checking for entire function
+def stream_XBAR( np.ndarray high not None , np.ndarray low not None , int timeperiod=-2**31 ):
+    """ XBAR(high, low[, timeperiod=?])"""
+    cdef:
+        np.npy_intp length
+        TA_RetCode retCode
+        double* high_data
+        double* low_data
+        int outbegidx
+        int outnbelement
+        double outhigh
+        double outlow
+    high = check_array(high)
+    high_data = <double*>high.data
+    low = check_array(low)
+    low_data = <double*>low.data
+    length = check_length2(high, low)
+    outhigh = NaN
+    outlow = NaN
+    retCode = lib.TA_XBAR( <int>(length) - 1 , <int>(length) - 1 , high_data , low_data , timeperiod , &outbegidx , &outnbelement , &outhigh , &outlow )
+    _ta_check_success("TA_XBAR", retCode)
+    return outhigh , outlow 
 
