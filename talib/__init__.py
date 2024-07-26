@@ -216,6 +216,9 @@ __function_groups__ = {
         'TEMA',
         'TRIMA',
         'WMA',
+        'AVGXBAR',
+        'PIVOTPOINT',
+        'XBAR'
         ],
     'Pattern Recognition': [
         'CDL2CROWS',
@@ -296,16 +299,21 @@ __function_groups__ = {
         'STDDEV',
         'TSF',
         'VAR',
+        'CDLMAXBAR',
+        'CDLWICK',
+        'CDLWICKPERCENT'
         ],
     'Volatility Indicators': [
         'ATR',
         'NATR',
         'TRANGE',
+        'ADR'
         ],
     'Volume Indicators': [
         'AD',
         'ADOSC',
-        'OBV'
+        'OBV',
+        'PVT'
         ],
     }
 
