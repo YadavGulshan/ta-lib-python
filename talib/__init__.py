@@ -217,7 +217,7 @@ __function_groups__ = {
         'TRIMA',
         'WMA',
         'AVGXBAR',
-        'PIVOTPOINT',
+        'PIVOTPOINTS',
         'XBAR'
         ],
     'Pattern Recognition': [
