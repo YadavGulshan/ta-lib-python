@@ -649,6 +649,33 @@ def AVGDEV( np.ndarray real not None , int timeperiod=-2**31 ):
 
 @wraparound(False)  # turn off relative indexing from end of lists
 @boundscheck(False) # turn off bounds-checking for entire function
+def AVGXBAR( np.ndarray high not None , np.ndarray low not None , np.ndarray volume not None , int timeperiod=-2**31 ):
+    """ AVGXBAR(high, low, volume[, timeperiod=?])"""
+    cdef:
+        np.npy_intp length
+        int begidx, endidx, lookback
+        TA_RetCode retCode
+        int outbegidx
+        int outnbelement
+        np.ndarray outhigh
+        np.ndarray outlow
+        np.ndarray outvolume
+    high = check_array(high)
+    low = check_array(low)
+    volume = check_array(volume)
+    length = check_length3(high, low, volume)
+    begidx = check_begidx3(length, <double*>(high.data), <double*>(low.data), <double*>(volume.data))
+    endidx = <int>length - begidx - 1
+    lookback = begidx + lib.TA_AVGXBAR_Lookback( timeperiod )
+    outhigh = make_double_array(length, lookback)
+    outlow = make_double_array(length, lookback)
+    outvolume = make_double_array(length, lookback)
+    retCode = lib.TA_AVGXBAR( 0 , endidx , <double *>(high.data)+begidx , <double *>(low.data)+begidx , <double *>(volume.data)+begidx , timeperiod , &outbegidx , &outnbelement , <double *>(outhigh.data)+lookback , <double *>(outlow.data)+lookback , <double *>(outvolume.data)+lookback )
+    _ta_check_success("TA_AVGXBAR", retCode)
+    return outhigh , outlow , outvolume 
+
+@wraparound(False)  # turn off relative indexing from end of lists
+@boundscheck(False) # turn off bounds-checking for entire function
 def BBANDS( np.ndarray real not None , int timeperiod=-2**31 , double nbdevup=-4e37 , double nbdevdn=-4e37 , int matype=0 ):
     """ BBANDS(real[, timeperiod=?, nbdevup=?, nbdevdn=?, matype=?])
 
@@ -2141,6 +2168,30 @@ def CDLMATHOLD( np.ndarray open not None , np.ndarray high not None , np.ndarray
 
 @wraparound(False)  # turn off relative indexing from end of lists
 @boundscheck(False) # turn off bounds-checking for entire function
+def CDLMAXBAR( np.ndarray open not None , np.ndarray high not None , np.ndarray low not None , np.ndarray close not None , int timeperiod=-2**31 ):
+    """ CDLMAXBAR(open, high, low, close[, timeperiod=?])"""
+    cdef:
+        np.npy_intp length
+        int begidx, endidx, lookback
+        TA_RetCode retCode
+        int outbegidx
+        int outnbelement
+        np.ndarray outreal
+    open = check_array(open)
+    high = check_array(high)
+    low = check_array(low)
+    close = check_array(close)
+    length = check_length4(open, high, low, close)
+    begidx = check_begidx4(length, <double*>(open.data), <double*>(high.data), <double*>(low.data), <double*>(close.data))
+    endidx = <int>length - begidx - 1
+    lookback = begidx + lib.TA_CDLMAXBAR_Lookback( timeperiod )
+    outreal = make_double_array(length, lookback)
+    retCode = lib.TA_CDLMAXBAR( 0 , endidx , <double *>(open.data)+begidx , <double *>(high.data)+begidx , <double *>(low.data)+begidx , <double *>(close.data)+begidx , timeperiod , &outbegidx , &outnbelement , <double *>(outreal.data)+lookback )
+    _ta_check_success("TA_CDLMAXBAR", retCode)
+    return outreal 
+
+@wraparound(False)  # turn off relative indexing from end of lists
+@boundscheck(False) # turn off bounds-checking for entire function
 def CDLMORNINGDOJISTAR( np.ndarray open not None , np.ndarray high not None , np.ndarray low not None , np.ndarray close not None , double penetration=0.3 ):
     """ CDLMORNINGDOJISTAR(open, high, low, close[, penetration=?])
 
@@ -2718,6 +2769,54 @@ def CDLUPSIDEGAP2CROWS( np.ndarray open not None , np.ndarray high not None , np
     retCode = lib.TA_CDLUPSIDEGAP2CROWS( 0 , endidx , <double *>(open.data)+begidx , <double *>(high.data)+begidx , <double *>(low.data)+begidx , <double *>(close.data)+begidx , &outbegidx , &outnbelement , <int *>(outinteger.data)+lookback )
     _ta_check_success("TA_CDLUPSIDEGAP2CROWS", retCode)
     return outinteger 
+
+@wraparound(False)  # turn off relative indexing from end of lists
+@boundscheck(False) # turn off bounds-checking for entire function
+def CDLWICK( np.ndarray open not None , np.ndarray high not None , np.ndarray low not None , np.ndarray close not None ):
+    """ CDLWICK(open, high, low, close)"""
+    cdef:
+        np.npy_intp length
+        int begidx, endidx, lookback
+        TA_RetCode retCode
+        int outbegidx
+        int outnbelement
+        np.ndarray outreal
+    open = check_array(open)
+    high = check_array(high)
+    low = check_array(low)
+    close = check_array(close)
+    length = check_length4(open, high, low, close)
+    begidx = check_begidx4(length, <double*>(open.data), <double*>(high.data), <double*>(low.data), <double*>(close.data))
+    endidx = <int>length - begidx - 1
+    lookback = begidx + lib.TA_CDLWICK_Lookback( )
+    outreal = make_double_array(length, lookback)
+    retCode = lib.TA_CDLWICK( 0 , endidx , <double *>(open.data)+begidx , <double *>(high.data)+begidx , <double *>(low.data)+begidx , <double *>(close.data)+begidx , &outbegidx , &outnbelement , <double *>(outreal.data)+lookback )
+    _ta_check_success("TA_CDLWICK", retCode)
+    return outreal 
+
+@wraparound(False)  # turn off relative indexing from end of lists
+@boundscheck(False) # turn off bounds-checking for entire function
+def CDLWICKPERCENT( np.ndarray open not None , np.ndarray high not None , np.ndarray low not None , np.ndarray close not None ):
+    """ CDLWICKPERCENT(open, high, low, close)"""
+    cdef:
+        np.npy_intp length
+        int begidx, endidx, lookback
+        TA_RetCode retCode
+        int outbegidx
+        int outnbelement
+        np.ndarray outreal
+    open = check_array(open)
+    high = check_array(high)
+    low = check_array(low)
+    close = check_array(close)
+    length = check_length4(open, high, low, close)
+    begidx = check_begidx4(length, <double*>(open.data), <double*>(high.data), <double*>(low.data), <double*>(close.data))
+    endidx = <int>length - begidx - 1
+    lookback = begidx + lib.TA_CDLWICKPERCENT_Lookback( )
+    outreal = make_double_array(length, lookback)
+    retCode = lib.TA_CDLWICKPERCENT( 0 , endidx , <double *>(open.data)+begidx , <double *>(high.data)+begidx , <double *>(low.data)+begidx , <double *>(close.data)+begidx , &outbegidx , &outnbelement , <double *>(outreal.data)+lookback )
+    _ta_check_success("TA_CDLWICKPERCENT", retCode)
+    return outreal 
 
 @wraparound(False)  # turn off relative indexing from end of lists
 @boundscheck(False) # turn off bounds-checking for entire function
@@ -4365,6 +4464,37 @@ def PVT( np.ndarray close not None , np.ndarray volume not None , int timeperiod
 
 @wraparound(False)  # turn off relative indexing from end of lists
 @boundscheck(False) # turn off bounds-checking for entire function
+def PIVOTPOINTS( np.ndarray high not None , np.ndarray low not None , np.ndarray close not None ):
+    """ PIVOTPOINTS(high, low, close)"""
+    cdef:
+        np.npy_intp length
+        int begidx, endidx, lookback
+        TA_RetCode retCode
+        int outbegidx
+        int outnbelement
+        np.ndarray outpivotpoint
+        np.ndarray outpivotpointresistance1
+        np.ndarray outpivotpointsupport1
+        np.ndarray outpivotpointresistance2
+        np.ndarray outpivotpointsupport2
+    high = check_array(high)
+    low = check_array(low)
+    close = check_array(close)
+    length = check_length3(high, low, close)
+    begidx = check_begidx3(length, <double*>(high.data), <double*>(low.data), <double*>(close.data))
+    endidx = <int>length - begidx - 1
+    lookback = begidx + lib.TA_PIVOTPOINTS_Lookback( )
+    outpivotpoint = make_double_array(length, lookback)
+    outpivotpointresistance1 = make_double_array(length, lookback)
+    outpivotpointsupport1 = make_double_array(length, lookback)
+    outpivotpointresistance2 = make_double_array(length, lookback)
+    outpivotpointsupport2 = make_double_array(length, lookback)
+    retCode = lib.TA_PIVOTPOINTS( 0 , endidx , <double *>(high.data)+begidx , <double *>(low.data)+begidx , <double *>(close.data)+begidx , &outbegidx , &outnbelement , <double *>(outpivotpoint.data)+lookback , <double *>(outpivotpointresistance1.data)+lookback , <double *>(outpivotpointsupport1.data)+lookback , <double *>(outpivotpointresistance2.data)+lookback , <double *>(outpivotpointsupport2.data)+lookback )
+    _ta_check_success("TA_PIVOTPOINTS", retCode)
+    return outpivotpoint , outpivotpointresistance1 , outpivotpointsupport1 , outpivotpointresistance2 , outpivotpointsupport2 
+
+@wraparound(False)  # turn off relative indexing from end of lists
+@boundscheck(False) # turn off bounds-checking for entire function
 def ROC( np.ndarray real not None , int timeperiod=-2**31 ):
     """ ROC(real[, timeperiod=?])
 
@@ -5365,18 +5495,18 @@ def XBAR( np.ndarray high not None , np.ndarray low not None , int timeperiod=-2
         TA_RetCode retCode
         int outbegidx
         int outnbelement
-        np.ndarray outhigh
-        np.ndarray outlow
+        np.ndarray outxhigh
+        np.ndarray outxlow
     high = check_array(high)
     low = check_array(low)
     length = check_length2(high, low)
     begidx = check_begidx2(length, <double*>(high.data), <double*>(low.data))
     endidx = <int>length - begidx - 1
     lookback = begidx + lib.TA_XBAR_Lookback( timeperiod )
-    outhigh = make_double_array(length, lookback)
-    outlow = make_double_array(length, lookback)
-    retCode = lib.TA_XBAR( 0 , endidx , <double *>(high.data)+begidx , <double *>(low.data)+begidx , timeperiod , &outbegidx , &outnbelement , <double *>(outhigh.data)+lookback , <double *>(outlow.data)+lookback )
+    outxhigh = make_double_array(length, lookback)
+    outxlow = make_double_array(length, lookback)
+    retCode = lib.TA_XBAR( 0 , endidx , <double *>(high.data)+begidx , <double *>(low.data)+begidx , timeperiod , &outbegidx , &outnbelement , <double *>(outxhigh.data)+lookback , <double *>(outxlow.data)+lookback )
     _ta_check_success("TA_XBAR", retCode)
-    return outhigh , outlow 
+    return outxhigh , outxlow 
 
-__TA_FUNCTION_NAMES__ = ["ACCBANDS","ACOS","ABR","AD","ADD","ADOSC","ADX","ADXR","APO","AROON","AROONOSC","ASIN","ATAN","ATR","ADR","AVGPRICE","AVGDEV","BBANDS","BETA","BOP","CCI","CDL2CROWS","CDL3BLACKCROWS","CDL3INSIDE","CDL3LINESTRIKE","CDL3OUTSIDE","CDL3STARSINSOUTH","CDL3WHITESOLDIERS","CDLABANDONEDBABY","CDLADVANCEBLOCK","CDLBELTHOLD","CDLBREAKAWAY","CDLCLOSINGMARUBOZU","CDLCONCEALBABYSWALL","CDLCOUNTERATTACK","CDLDARKCLOUDCOVER","CDLDOJI","CDLDOJISTAR","CDLDRAGONFLYDOJI","CDLENGULFING","CDLEVENINGDOJISTAR","CDLEVENINGSTAR","CDLGAPSIDESIDEWHITE","CDLGRAVESTONEDOJI","CDLHAMMER","CDLHANGINGMAN","CDLHARAMI","CDLHARAMICROSS","CDLHIGHWAVE","CDLHIKKAKE","CDLHIKKAKEMOD","CDLHOMINGPIGEON","CDLIDENTICAL3CROWS","CDLINNECK","CDLINVERTEDHAMMER","CDLKICKING","CDLKICKINGBYLENGTH","CDLLADDERBOTTOM","CDLLONGLEGGEDDOJI","CDLLONGLINE","CDLMARUBOZU","CDLMATCHINGLOW","CDLMATHOLD","CDLMORNINGDOJISTAR","CDLMORNINGSTAR","CDLONNECK","CDLPIERCING","CDLRICKSHAWMAN","CDLRISEFALL3METHODS","CDLSEPARATINGLINES","CDLSHOOTINGSTAR","CDLSHORTLINE","CDLSPINNINGTOP","CDLSTALLEDPATTERN","CDLSTICKSANDWICH","CDLTAKURI","CDLTASUKIGAP","CDLTHRUSTING","CDLTRISTAR","CDLUNIQUE3RIVER","CDLUPSIDEGAP2CROWS","CDLXSIDEGAP3METHODS","CEIL","CMO","CORREL","COS","COSH","DEMA","DIV","DX","EMA","EXP","FLOOR","HT_DCPERIOD","HT_DCPHASE","HT_PHASOR","HT_SINE","HT_TRENDLINE","HT_TRENDMODE","IMI","KAMA","LINEARREG","LINEARREG_ANGLE","LINEARREG_INTERCEPT","LINEARREG_SLOPE","LN","LOG10","MA","MACD","MACDEXT","MACDFIX","MAMA","MAVP","MAX","MAXINDEX","MEDPRICE","MFI","MIDPOINT","MIDPRICE","MIN","MININDEX","MINMAX","MINMAXINDEX","MINUS_DI","MINUS_DM","MOM","MULT","NATR","OBV","PLUS_DI","PLUS_DM","PPO","PVT","ROC","ROCP","ROCR","ROCR100","RSI","SAR","SAREXT","SIN","SINH","SMA","SQRT","STDDEV","STOCH","STOCHF","STOCHRSI","SUB","SUM","T3","TAN","TANH","TEMA","TRANGE","TRIMA","TRIX","TSF","TYPPRICE","ULTOSC","VAR","WCLPRICE","WILLR","WMA","XBAR"]
+__TA_FUNCTION_NAMES__ = ["ACCBANDS","ACOS","ABR","AD","ADD","ADOSC","ADX","ADXR","APO","AROON","AROONOSC","ASIN","ATAN","ATR","ADR","AVGPRICE","AVGDEV","AVGXBAR","BBANDS","BETA","BOP","CCI","CDL2CROWS","CDL3BLACKCROWS","CDL3INSIDE","CDL3LINESTRIKE","CDL3OUTSIDE","CDL3STARSINSOUTH","CDL3WHITESOLDIERS","CDLABANDONEDBABY","CDLADVANCEBLOCK","CDLBELTHOLD","CDLBREAKAWAY","CDLCLOSINGMARUBOZU","CDLCONCEALBABYSWALL","CDLCOUNTERATTACK","CDLDARKCLOUDCOVER","CDLDOJI","CDLDOJISTAR","CDLDRAGONFLYDOJI","CDLENGULFING","CDLEVENINGDOJISTAR","CDLEVENINGSTAR","CDLGAPSIDESIDEWHITE","CDLGRAVESTONEDOJI","CDLHAMMER","CDLHANGINGMAN","CDLHARAMI","CDLHARAMICROSS","CDLHIGHWAVE","CDLHIKKAKE","CDLHIKKAKEMOD","CDLHOMINGPIGEON","CDLIDENTICAL3CROWS","CDLINNECK","CDLINVERTEDHAMMER","CDLKICKING","CDLKICKINGBYLENGTH","CDLLADDERBOTTOM","CDLLONGLEGGEDDOJI","CDLLONGLINE","CDLMARUBOZU","CDLMATCHINGLOW","CDLMATHOLD","CDLMAXBAR","CDLMORNINGDOJISTAR","CDLMORNINGSTAR","CDLONNECK","CDLPIERCING","CDLRICKSHAWMAN","CDLRISEFALL3METHODS","CDLSEPARATINGLINES","CDLSHOOTINGSTAR","CDLSHORTLINE","CDLSPINNINGTOP","CDLSTALLEDPATTERN","CDLSTICKSANDWICH","CDLTAKURI","CDLTASUKIGAP","CDLTHRUSTING","CDLTRISTAR","CDLUNIQUE3RIVER","CDLUPSIDEGAP2CROWS","CDLWICK","CDLWICKPERCENT","CDLXSIDEGAP3METHODS","CEIL","CMO","CORREL","COS","COSH","DEMA","DIV","DX","EMA","EXP","FLOOR","HT_DCPERIOD","HT_DCPHASE","HT_PHASOR","HT_SINE","HT_TRENDLINE","HT_TRENDMODE","IMI","KAMA","LINEARREG","LINEARREG_ANGLE","LINEARREG_INTERCEPT","LINEARREG_SLOPE","LN","LOG10","MA","MACD","MACDEXT","MACDFIX","MAMA","MAVP","MAX","MAXINDEX","MEDPRICE","MFI","MIDPOINT","MIDPRICE","MIN","MININDEX","MINMAX","MINMAXINDEX","MINUS_DI","MINUS_DM","MOM","MULT","NATR","OBV","PLUS_DI","PLUS_DM","PPO","PVT","PIVOTPOINTS","ROC","ROCP","ROCR","ROCR100","RSI","SAR","SAREXT","SIN","SINH","SMA","SQRT","STDDEV","STOCH","STOCHF","STOCHRSI","SUB","SUM","T3","TAN","TANH","TEMA","TRANGE","TRIMA","TRIX","TSF","TYPPRICE","ULTOSC","VAR","WCLPRICE","WILLR","WMA","XBAR"]

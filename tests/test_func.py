@@ -3,7 +3,7 @@ from numpy.testing import assert_array_equal, assert_array_almost_equal
 import pytest
 
 import talib
-from talib import func
+from talib import func, XBAR
 
 
 def test_talib_version():
@@ -195,3 +195,12 @@ def test_MAXINDEX():
     d = np.array([1., 2, 3])
     e = func.MAXINDEX(d, 10)
     assert_array_equal(e, [0,0,0])
+
+
+def test_PP_info():
+    from talib import abstract as ta
+    print(ta.Function('XBAR').info)
+
+
+if __name__ == "__main__":
+    test_PP_info()

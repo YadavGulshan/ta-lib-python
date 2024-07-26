@@ -509,6 +509,125 @@ cdef extern from "ta-lib/ta_func.h":
     int TA_WILLR_Lookback(int optInTimePeriod)
     TA_RetCode TA_WMA(int startIdx, int endIdx, const double inReal[], int optInTimePeriod, int *outBegIdx, int *outNBElement, double outReal[])
     int TA_WMA_Lookback(int optInTimePeriod)
+    TA_RetCode TA_XBAR( int startIdx, int endIdx, const double inHigh[], const double inLow[], int optInTimePeriod, int *outBegIdx, int *outNBElement, double outXHigh[], double outXLow[])
+    int TA_XBAR_Lookback(int optInTimePeriod)
+    TA_RetCode TA_PIVOTPOINTS(int    startIdx,
+                              int    endIdx,
+                              const double inHigh[],
+                              const double inLow[],
+                              const double inClose[],
+                              int *outBegIdx,
+                              int *outNBElement,
+                              double        outPivotPoint[],
+                              double        outPivotPointResistance1[],
+                              double        outPivotPointSupport1[],
+                              double        outPivotPointResistance2[],
+                              double        outPivotPointSupport2[])
+    int TA_PIVOTPOINTS_Lookback( )
+    TA_RetCode TA_PVT(int    startIdx,
+                      int    endIdx,
+                      const double inClose[],
+                      const double inVolume[],
+                      int           optInTimePeriod,
+                      int *outBegIdx,
+                      int *outNBElement,
+                      double        outReal[])
+
+    int TA_PVT_Lookback(int           optInTimePeriod)
+    TA_RetCode TA_IMI(int    startIdx,
+                      int    endIdx,
+                      const double inOpen[],
+                      const double inClose[],
+                      int           optInTimePeriod,
+                      int *outBegIdx,
+                      int *outNBElement,
+                      double        outReal[])
+    int TA_IMI_Lookback(int           optInTimePeriod)
+    TA_RetCode TA_CDLWICKPERCENT(int    startIdx,
+                                 int    endIdx,
+                                 const double inOpen[],
+                                 const double inHigh[],
+                                 const double inLow[],
+                                 const double inClose[],
+                                 int *outBegIdx,
+                                 int *outNBElement,
+                                 double        outReal[])
+    int TA_CDLWICKPERCENT_Lookback()
+    TA_RetCode TA_CDLWICK(int    startIdx,
+                          int    endIdx,
+                          const double inOpen[],
+                          const double inHigh[],
+                          const double inLow[],
+                          const double inClose[],
+                          int *outBegIdx,
+                          int *outNBElement,
+                          double        outReal[])
+    int TA_CDLWICK_Lookback()
+    TA_RetCode TA_CDLMAXBAR(int    startIdx,
+                            int    endIdx,
+                            const double inOpen[],
+                            const double inHigh[],
+                            const double inLow[],
+                            const double inClose[],
+                            int           optInTimePeriod,
+                            int *outBegIdx,
+                            int *outNBElement,
+                            double        outReal[])
+    int TA_CDLMAXBAR_Lookback(int           optInTimePeriod)
+    TA_RetCode TA_AVGXBAR(int    startIdx,
+                          int    endIdx,
+                          const double inHigh[],
+                          const double inLow[],
+                          const double inVolume[],
+                          int           optInTimePeriod,
+                          int *outBegIdx,
+                          int *outNBElement,
+                          double        outHigh[],
+                          double        outLow[],
+                          double        outVolume[])
+    int TA_AVGXBAR_Lookback(int           optInTimePeriod)
+    TA_RetCode TA_AVGDEV(int    startIdx,
+                         int    endIdx,
+                         const double inReal[],
+                         int           optInTimePeriod,
+                         int *outBegIdx,
+                         int *outNBElement,
+                         double        outReal[])
+    int TA_AVGDEV_Lookback(int           optInTimePeriod)
+    TA_RetCode TA_ADR(int    startIdx,
+                      int    endIdx,
+                      const double inHigh[],
+                      const double inLow[],
+                      int           optInTimePeriod,
+                      int *outBegIdx,
+                      int *outNBElement,
+                      double        outReal[])
+    int TA_ADR_Lookback(int           optInTimePeriod)
+    TA_RetCode TA_ABR(int    startIdx,
+                      int    endIdx,
+                      const double inOpen[],
+                      const double inClose[],
+                      int           optInTimePeriod,
+                      int *outBegIdx,
+                      int *outNBElement,
+                      double        outReal[])
+    int TA_ABR_Lookback(int           optInTimePeriod)
+    TA_RetCode TA_ACCBANDS(int    startIdx,
+                           int    endIdx,
+                           const double inHigh[],
+                           const double inLow[],
+                           const double inClose[],
+                           int           optInTimePeriod,
+                           int *outBegIdx,
+                           int *outNBElement,
+                           double        outRealUpperBand[],
+                           double        outRealMiddleBand[],
+                           double        outRealLowerBand[])
+    int TA_ACCBANDS_Lookback(int           optInTimePeriod)
+
+
+
+
 
     # TALIB functions for TA_SetUnstablePeriod
     TA_RetCode TA_SetUnstablePeriod(TA_FuncUnstId id, unsigned int unstablePeriod)

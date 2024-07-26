@@ -526,6 +526,35 @@ def stream_AVGDEV( np.ndarray real not None , int timeperiod=-2**31 ):
 
 @wraparound(False)  # turn off relative indexing from end of lists
 @boundscheck(False) # turn off bounds-checking for entire function
+def stream_AVGXBAR( np.ndarray high not None , np.ndarray low not None , np.ndarray volume not None , int timeperiod=-2**31 ):
+    """ AVGXBAR(high, low, volume[, timeperiod=?])"""
+    cdef:
+        np.npy_intp length
+        TA_RetCode retCode
+        double* high_data
+        double* low_data
+        double* volume_data
+        int outbegidx
+        int outnbelement
+        double outhigh
+        double outlow
+        double outvolume
+    high = check_array(high)
+    high_data = <double*>high.data
+    low = check_array(low)
+    low_data = <double*>low.data
+    volume = check_array(volume)
+    volume_data = <double*>volume.data
+    length = check_length3(high, low, volume)
+    outhigh = NaN
+    outlow = NaN
+    outvolume = NaN
+    retCode = lib.TA_AVGXBAR( <int>(length) - 1 , <int>(length) - 1 , high_data , low_data , volume_data , timeperiod , &outbegidx , &outnbelement , &outhigh , &outlow , &outvolume )
+    _ta_check_success("TA_AVGXBAR", retCode)
+    return outhigh , outlow , outvolume 
+
+@wraparound(False)  # turn off relative indexing from end of lists
+@boundscheck(False) # turn off bounds-checking for entire function
 def stream_BBANDS( np.ndarray real not None , int timeperiod=-2**31 , double nbdevup=-4e37 , double nbdevdn=-4e37 , int matype=0 ):
     """ BBANDS(real[, timeperiod=?, nbdevup=?, nbdevdn=?, matype=?])
 
@@ -2190,6 +2219,34 @@ def stream_CDLMATHOLD( np.ndarray open not None , np.ndarray high not None , np.
 
 @wraparound(False)  # turn off relative indexing from end of lists
 @boundscheck(False) # turn off bounds-checking for entire function
+def stream_CDLMAXBAR( np.ndarray open not None , np.ndarray high not None , np.ndarray low not None , np.ndarray close not None , int timeperiod=-2**31 ):
+    """ CDLMAXBAR(open, high, low, close[, timeperiod=?])"""
+    cdef:
+        np.npy_intp length
+        TA_RetCode retCode
+        double* open_data
+        double* high_data
+        double* low_data
+        double* close_data
+        int outbegidx
+        int outnbelement
+        double outreal
+    open = check_array(open)
+    open_data = <double*>open.data
+    high = check_array(high)
+    high_data = <double*>high.data
+    low = check_array(low)
+    low_data = <double*>low.data
+    close = check_array(close)
+    close_data = <double*>close.data
+    length = check_length4(open, high, low, close)
+    outreal = NaN
+    retCode = lib.TA_CDLMAXBAR( <int>(length) - 1 , <int>(length) - 1 , open_data , high_data , low_data , close_data , timeperiod , &outbegidx , &outnbelement , &outreal )
+    _ta_check_success("TA_CDLMAXBAR", retCode)
+    return outreal 
+
+@wraparound(False)  # turn off relative indexing from end of lists
+@boundscheck(False) # turn off bounds-checking for entire function
 def stream_CDLMORNINGDOJISTAR( np.ndarray open not None , np.ndarray high not None , np.ndarray low not None , np.ndarray close not None , double penetration=0.3 ):
     """ CDLMORNINGDOJISTAR(open, high, low, close[, penetration=?])
 
@@ -2839,6 +2896,62 @@ def stream_CDLUPSIDEGAP2CROWS( np.ndarray open not None , np.ndarray high not No
     retCode = lib.TA_CDLUPSIDEGAP2CROWS( <int>(length) - 1 , <int>(length) - 1 , open_data , high_data , low_data , close_data , &outbegidx , &outnbelement , &outinteger )
     _ta_check_success("TA_CDLUPSIDEGAP2CROWS", retCode)
     return outinteger 
+
+@wraparound(False)  # turn off relative indexing from end of lists
+@boundscheck(False) # turn off bounds-checking for entire function
+def stream_CDLWICK( np.ndarray open not None , np.ndarray high not None , np.ndarray low not None , np.ndarray close not None ):
+    """ CDLWICK(open, high, low, close)"""
+    cdef:
+        np.npy_intp length
+        TA_RetCode retCode
+        double* open_data
+        double* high_data
+        double* low_data
+        double* close_data
+        int outbegidx
+        int outnbelement
+        double outreal
+    open = check_array(open)
+    open_data = <double*>open.data
+    high = check_array(high)
+    high_data = <double*>high.data
+    low = check_array(low)
+    low_data = <double*>low.data
+    close = check_array(close)
+    close_data = <double*>close.data
+    length = check_length4(open, high, low, close)
+    outreal = NaN
+    retCode = lib.TA_CDLWICK( <int>(length) - 1 , <int>(length) - 1 , open_data , high_data , low_data , close_data , &outbegidx , &outnbelement , &outreal )
+    _ta_check_success("TA_CDLWICK", retCode)
+    return outreal 
+
+@wraparound(False)  # turn off relative indexing from end of lists
+@boundscheck(False) # turn off bounds-checking for entire function
+def stream_CDLWICKPERCENT( np.ndarray open not None , np.ndarray high not None , np.ndarray low not None , np.ndarray close not None ):
+    """ CDLWICKPERCENT(open, high, low, close)"""
+    cdef:
+        np.npy_intp length
+        TA_RetCode retCode
+        double* open_data
+        double* high_data
+        double* low_data
+        double* close_data
+        int outbegidx
+        int outnbelement
+        double outreal
+    open = check_array(open)
+    open_data = <double*>open.data
+    high = check_array(high)
+    high_data = <double*>high.data
+    low = check_array(low)
+    low_data = <double*>low.data
+    close = check_array(close)
+    close_data = <double*>close.data
+    length = check_length4(open, high, low, close)
+    outreal = NaN
+    retCode = lib.TA_CDLWICKPERCENT( <int>(length) - 1 , <int>(length) - 1 , open_data , high_data , low_data , close_data , &outbegidx , &outnbelement , &outreal )
+    _ta_check_success("TA_CDLWICKPERCENT", retCode)
+    return outreal 
 
 @wraparound(False)  # turn off relative indexing from end of lists
 @boundscheck(False) # turn off bounds-checking for entire function
@@ -4420,6 +4533,39 @@ def stream_PVT( np.ndarray close not None , np.ndarray volume not None , int tim
 
 @wraparound(False)  # turn off relative indexing from end of lists
 @boundscheck(False) # turn off bounds-checking for entire function
+def stream_PIVOTPOINTS( np.ndarray high not None , np.ndarray low not None , np.ndarray close not None ):
+    """ PIVOTPOINTS(high, low, close)"""
+    cdef:
+        np.npy_intp length
+        TA_RetCode retCode
+        double* high_data
+        double* low_data
+        double* close_data
+        int outbegidx
+        int outnbelement
+        double outpivotpoint
+        double outpivotpointresistance1
+        double outpivotpointsupport1
+        double outpivotpointresistance2
+        double outpivotpointsupport2
+    high = check_array(high)
+    high_data = <double*>high.data
+    low = check_array(low)
+    low_data = <double*>low.data
+    close = check_array(close)
+    close_data = <double*>close.data
+    length = check_length3(high, low, close)
+    outpivotpoint = NaN
+    outpivotpointresistance1 = NaN
+    outpivotpointsupport1 = NaN
+    outpivotpointresistance2 = NaN
+    outpivotpointsupport2 = NaN
+    retCode = lib.TA_PIVOTPOINTS( <int>(length) - 1 , <int>(length) - 1 , high_data , low_data , close_data , &outbegidx , &outnbelement , &outpivotpoint , &outpivotpointresistance1 , &outpivotpointsupport1 , &outpivotpointresistance2 , &outpivotpointsupport2 )
+    _ta_check_success("TA_PIVOTPOINTS", retCode)
+    return outpivotpoint , outpivotpointresistance1 , outpivotpointsupport1 , outpivotpointresistance2 , outpivotpointsupport2 
+
+@wraparound(False)  # turn off relative indexing from end of lists
+@boundscheck(False) # turn off bounds-checking for entire function
 def stream_ROC( np.ndarray real not None , int timeperiod=-2**31 ):
     """ ROC(real[, timeperiod=?])
 
@@ -5393,16 +5539,16 @@ def stream_XBAR( np.ndarray high not None , np.ndarray low not None , int timepe
         double* low_data
         int outbegidx
         int outnbelement
-        double outhigh
-        double outlow
+        double outxhigh
+        double outxlow
     high = check_array(high)
     high_data = <double*>high.data
     low = check_array(low)
     low_data = <double*>low.data
     length = check_length2(high, low)
-    outhigh = NaN
-    outlow = NaN
-    retCode = lib.TA_XBAR( <int>(length) - 1 , <int>(length) - 1 , high_data , low_data , timeperiod , &outbegidx , &outnbelement , &outhigh , &outlow )
+    outxhigh = NaN
+    outxlow = NaN
+    retCode = lib.TA_XBAR( <int>(length) - 1 , <int>(length) - 1 , high_data , low_data , timeperiod , &outbegidx , &outnbelement , &outxhigh , &outxlow )
     _ta_check_success("TA_XBAR", retCode)
-    return outhigh , outlow 
+    return outxhigh , outxlow 
 
