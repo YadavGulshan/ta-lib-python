@@ -1,7 +1,7 @@
 from typing import Tuple
 
 import numpy as np
-from numpy.testing import assert_array_equal, assert_array_almost_equal
+from numpy.testing import assert_array_equal, assert_array_almost_equal, assert_allclose
 import pytest
 
 import talib
@@ -350,7 +350,12 @@ def test_VWAP():
     h = np.array([102.25, 104.00, 105.50, 104.25, 106.75, 105.00, 107.75, 108.50, 110.00, 111.25])
     low = np.array([99.25, 100.75, 102.00, 101.50, 103.25, 102.00, 104.50, 105.25, 106.75, 107.50])
     c = np.array([101.75, 103.50, 102.50, 104.25, 103.75, 105.50, 106.25, 107.75, 109.00, 110.50])
-    volume = np.array([100, 200, 300, 400, 500, 600, 700, 800, 900, 1000])
+    volume = np.array([100., 200, 300, 400, 500, 600, 700, 800, 900, 1000])
+
+    vwap = func.VWAP(h, low, c, volume)
+    expected_vwap = np.cumsum(volume * (h + low + c) / 3) / np.cumsum(volume)
+    assert_allclose(vwap, expected_vwap, rtol=1e-10, atol=1e-10)
+
 
 if __name__ == "__main__":
     test_VWAP()
