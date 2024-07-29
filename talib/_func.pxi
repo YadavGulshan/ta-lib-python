@@ -142,7 +142,19 @@ cdef np.ndarray make_int_array(np.npy_intp length, int lookback):
 @wraparound(False)  # turn off relative indexing from end of lists
 @boundscheck(False) # turn off bounds-checking for entire function
 def ACCBANDS( np.ndarray high not None , np.ndarray low not None , np.ndarray close not None , int timeperiod=-2**31 ):
-    """ ACCBANDS(high, low, close[, timeperiod=?])"""
+    """ ACCBANDS(high, low, close[, timeperiod=?])
+
+    Acceleration Bands (Overlap Studies)
+
+    Inputs:
+        prices: ['high', 'low', 'close']
+    Parameters:
+        timeperiod: 20
+    Outputs:
+        upperband
+        middleband
+        lowerband
+    """
     cdef:
         np.npy_intp length
         int begidx, endidx, lookback
@@ -198,7 +210,17 @@ def ACOS( np.ndarray real not None ):
 @wraparound(False)  # turn off relative indexing from end of lists
 @boundscheck(False) # turn off bounds-checking for entire function
 def ABR( np.ndarray open not None , np.ndarray close not None , int timeperiod=-2**31 ):
-    """ ABR(open, close[, timeperiod=?])"""
+    """ ABR(open, close[, timeperiod=?])
+
+    Average Bar Range (Volatility Indicators)
+
+    Inputs:
+        prices: ['open', 'close']
+    Parameters:
+        timeperiod: 14
+    Outputs:
+        real
+    """
     cdef:
         np.npy_intp length
         int begidx, endidx, lookback
@@ -575,7 +597,17 @@ def ATR( np.ndarray high not None , np.ndarray low not None , np.ndarray close n
 @wraparound(False)  # turn off relative indexing from end of lists
 @boundscheck(False) # turn off bounds-checking for entire function
 def ADR( np.ndarray high not None , np.ndarray low not None , int timeperiod=-2**31 ):
-    """ ADR(high, low[, timeperiod=?])"""
+    """ ADR(high, low[, timeperiod=?])
+
+    Average Daily Range (Volatility Indicators)
+
+    Inputs:
+        prices: ['high', 'low']
+    Parameters:
+        timeperiod: 14
+    Outputs:
+        real
+    """
     cdef:
         np.npy_intp length
         int begidx, endidx, lookback
@@ -629,7 +661,17 @@ def AVGPRICE( np.ndarray open not None , np.ndarray high not None , np.ndarray l
 @wraparound(False)  # turn off relative indexing from end of lists
 @boundscheck(False) # turn off bounds-checking for entire function
 def AVGDEV( np.ndarray real not None , int timeperiod=-2**31 ):
-    """ AVGDEV(real[, timeperiod=?])"""
+    """ AVGDEV(real[, timeperiod=?])
+
+    Average Deviation (Price Transform)
+
+    Inputs:
+        real: (any ndarray)
+    Parameters:
+        timeperiod: 14
+    Outputs:
+        real
+    """
     cdef:
         np.npy_intp length
         int begidx, endidx, lookback
@@ -650,7 +692,19 @@ def AVGDEV( np.ndarray real not None , int timeperiod=-2**31 ):
 @wraparound(False)  # turn off relative indexing from end of lists
 @boundscheck(False) # turn off bounds-checking for entire function
 def AVGXBAR( np.ndarray high not None , np.ndarray low not None , np.ndarray volume not None , int timeperiod=-2**31 ):
-    """ AVGXBAR(high, low, volume[, timeperiod=?])"""
+    """ AVGXBAR(high, low, volume[, timeperiod=?])
+
+    Avg X-Bar: Avg High, Low, and Volume lines for the last N periods (Overlap Studies)
+
+    Inputs:
+        prices: ['high', 'low', 'volume']
+    Parameters:
+        timeperiod: 1
+    Outputs:
+        high
+        low
+        volume
+    """
     cdef:
         np.npy_intp length
         int begidx, endidx, lookback
@@ -2168,8 +2222,18 @@ def CDLMATHOLD( np.ndarray open not None , np.ndarray high not None , np.ndarray
 
 @wraparound(False)  # turn off relative indexing from end of lists
 @boundscheck(False) # turn off bounds-checking for entire function
-def CDLMAXBAR( np.ndarray open not None , np.ndarray high not None , np.ndarray low not None , np.ndarray close not None , int timeperiod=-2**31 ):
-    """ CDLMAXBAR(open, high, low, close[, timeperiod=?])"""
+def CDLMAXBAR( np.ndarray high not None , np.ndarray low not None , int timeperiod=-2**31 ):
+    """ CDLMAXBAR(high, low[, timeperiod=?])
+
+    CDLMAXBAR: Highest bar over a specified period (Statistic Functions)
+
+    Inputs:
+        prices: ['high', 'low']
+    Parameters:
+        timeperiod: 1
+    Outputs:
+        real
+    """
     cdef:
         np.npy_intp length
         int begidx, endidx, lookback
@@ -2177,16 +2241,14 @@ def CDLMAXBAR( np.ndarray open not None , np.ndarray high not None , np.ndarray 
         int outbegidx
         int outnbelement
         np.ndarray outreal
-    open = check_array(open)
     high = check_array(high)
     low = check_array(low)
-    close = check_array(close)
-    length = check_length4(open, high, low, close)
-    begidx = check_begidx4(length, <double*>(open.data), <double*>(high.data), <double*>(low.data), <double*>(close.data))
+    length = check_length2(high, low)
+    begidx = check_begidx2(length, <double*>(high.data), <double*>(low.data))
     endidx = <int>length - begidx - 1
     lookback = begidx + lib.TA_CDLMAXBAR_Lookback( timeperiod )
     outreal = make_double_array(length, lookback)
-    retCode = lib.TA_CDLMAXBAR( 0 , endidx , <double *>(open.data)+begidx , <double *>(high.data)+begidx , <double *>(low.data)+begidx , <double *>(close.data)+begidx , timeperiod , &outbegidx , &outnbelement , <double *>(outreal.data)+lookback )
+    retCode = lib.TA_CDLMAXBAR( 0 , endidx , <double *>(high.data)+begidx , <double *>(low.data)+begidx , timeperiod , &outbegidx , &outnbelement , <double *>(outreal.data)+lookback )
     _ta_check_success("TA_CDLMAXBAR", retCode)
     return outreal 
 
@@ -2773,7 +2835,15 @@ def CDLUPSIDEGAP2CROWS( np.ndarray open not None , np.ndarray high not None , np
 @wraparound(False)  # turn off relative indexing from end of lists
 @boundscheck(False) # turn off bounds-checking for entire function
 def CDLWICK( np.ndarray open not None , np.ndarray high not None , np.ndarray low not None , np.ndarray close not None ):
-    """ CDLWICK(open, high, low, close)"""
+    """ CDLWICK(open, high, low, close)
+
+    CDLWICK: Wick length of current bar (Statistic Functions)
+
+    Inputs:
+        prices: ['open', 'high', 'low', 'close']
+    Outputs:
+        real
+    """
     cdef:
         np.npy_intp length
         int begidx, endidx, lookback
@@ -2797,7 +2867,15 @@ def CDLWICK( np.ndarray open not None , np.ndarray high not None , np.ndarray lo
 @wraparound(False)  # turn off relative indexing from end of lists
 @boundscheck(False) # turn off bounds-checking for entire function
 def CDLWICKPERCENT( np.ndarray open not None , np.ndarray high not None , np.ndarray low not None , np.ndarray close not None ):
-    """ CDLWICKPERCENT(open, high, low, close)"""
+    """ CDLWICKPERCENT(open, high, low, close)
+
+    CDLWICKPERCENT: Wick length of current bar as a percentage of the bar (Statistic Functions)
+
+    Inputs:
+        prices: ['open', 'high', 'low', 'close']
+    Outputs:
+        real
+    """
     cdef:
         np.npy_intp length
         int begidx, endidx, lookback
@@ -3368,7 +3446,17 @@ def HT_TRENDMODE( np.ndarray real not None ):
 @wraparound(False)  # turn off relative indexing from end of lists
 @boundscheck(False) # turn off bounds-checking for entire function
 def IMI( np.ndarray open not None , np.ndarray close not None , int timeperiod=-2**31 ):
-    """ IMI(open, close[, timeperiod=?])"""
+    """ IMI(open, close[, timeperiod=?])
+
+    Intraday Momentum Index (Momentum Indicators)
+
+    Inputs:
+        prices: ['open', 'close']
+    Parameters:
+        timeperiod: 14
+    Outputs:
+        real
+    """
     cdef:
         np.npy_intp length
         int begidx, endidx, lookback
@@ -4443,7 +4531,17 @@ def PPO( np.ndarray real not None , int fastperiod=-2**31 , int slowperiod=-2**3
 @wraparound(False)  # turn off relative indexing from end of lists
 @boundscheck(False) # turn off bounds-checking for entire function
 def PVT( np.ndarray close not None , np.ndarray volume not None , int timeperiod=-2**31 ):
-    """ PVT(close, volume[, timeperiod=?])"""
+    """ PVT(close, volume[, timeperiod=?])
+
+    Price Volume Trend: prevPvt + volume * (close-prevClose)/prevClose (Volume Indicators)
+
+    Inputs:
+        prices: ['close', 'volume']
+    Parameters:
+        timeperiod: 1
+    Outputs:
+        real
+    """
     cdef:
         np.npy_intp length
         int begidx, endidx, lookback
@@ -4465,7 +4563,19 @@ def PVT( np.ndarray close not None , np.ndarray volume not None , int timeperiod
 @wraparound(False)  # turn off relative indexing from end of lists
 @boundscheck(False) # turn off bounds-checking for entire function
 def PIVOTPOINTS( np.ndarray high not None , np.ndarray low not None , np.ndarray close not None ):
-    """ PIVOTPOINTS(high, low, close)"""
+    """ PIVOTPOINTS(high, low, close)
+
+    Pivot Points (Overlap Studies)
+
+    Inputs:
+        prices: ['high', 'low', 'close']
+    Outputs:
+        pivotpoint
+        pivotpointresistance1
+        pivotpointsupport1
+        pivotpointresistance2
+        pivotpointsupport2
+    """
     cdef:
         np.npy_intp length
         int begidx, endidx, lookback
@@ -5488,7 +5598,18 @@ def WMA( np.ndarray real not None , int timeperiod=-2**31 ):
 @wraparound(False)  # turn off relative indexing from end of lists
 @boundscheck(False) # turn off bounds-checking for entire function
 def XBAR( np.ndarray high not None , np.ndarray low not None , int timeperiod=-2**31 ):
-    """ XBAR(high, low[, timeperiod=?])"""
+    """ XBAR(high, low[, timeperiod=?])
+
+    X-Bar: High and Low lines for the last N periods (Overlap Studies)
+
+    Inputs:
+        prices: ['high', 'low']
+    Parameters:
+        timeperiod: 1
+    Outputs:
+        xhigh
+        xlow
+    """
     cdef:
         np.npy_intp length
         int begidx, endidx, lookback

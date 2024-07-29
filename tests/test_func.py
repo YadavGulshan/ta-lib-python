@@ -1,3 +1,5 @@
+from typing import Tuple
+
 import numpy as np
 from numpy.testing import assert_array_equal, assert_array_almost_equal
 import pytest
@@ -279,23 +281,63 @@ def test_CDLMAXBAR():
     import talib as func
     import numpy as np
 
-    h = np.array([102.25, 104.00, 105.50, 104.25, 106.75, 105.00, 107.75, 108.50, 110.00, 111.25])
-    low = np.array([99.25, 100.75, 102.00, 101.50, 103.25, 102.00, 104.50, 105.25, 106.75, 107.50])
+    h = np.array([1., 2, 7, 3, 7, 6, 11, 9, 8, 2])
+    low = np.array([0., 1, 2, 3, 4, 5, 6, 7, 8, 9])
+    time_period = 2
 
-    result: np.ndarray = func.CDLMAXBAR(h, low, timeperiod=5)
-    print(result)
+    result: np.ndarray = func.CDLMAXBAR(h, low, timeperiod=time_period)
+    assert_array_equal(result, [np.nan, 1, 5, 5, 3, 3, 5, 5, 2, 7])
+
 
 def test_ADR():
-    pass
+    import talib as func
+    import numpy as np
+
+    h = np.array([1., 2, 7, 3, 7, 6, 11, 9, 8, 2])
+    low = np.array([0., 1, 2, 3, 4, 5, 6, 7, 8, 9])
+    time_period = 2
+
+    result: np.ndarray = func.ADR(h, low, timeperiod=time_period)
+    assert_array_equal(result, [np.nan, 1., 3., 2.5, 1.5, 2., 3., 3.5, 1., 3.5])
 
 
 def test_ABR():
-    pass
+    import talib as func
+    import numpy as np
+
+    o = np.array([1., 2, 7, 3, 7, 6, 11, 9, 8, 2])
+    c = np.array([0., 1, 2, 3, 4, 5, 6, 7, 8, 9])
+    time_period = 2
+
+    result: np.ndarray = func.ABR(o, c, timeperiod=time_period)
+    assert_array_equal(result, [np.nan, 1., 3., 2.5, 1.5, 2., 3., 3.5, 1., 3.5])
 
 
 def test_PIVOT_POINTS():
-    pass
+    import talib as func
+    import numpy as np
 
+    h = np.array([102.25, 104.00, 105.50, 104.25, 106.75, 105.00, 107.75, 108.50, 110.00, 111.25])
+    low = np.array([99.25, 100.75, 102.00, 101.50, 103.25, 102.00, 104.50, 105.25, 106.75, 107.50])
+    c = np.array([101.75, 103.50, 102.50, 104.25, 103.75, 105.50, 106.25, 107.75, 109.00, 110.50])
 
-if __name__ == "__main__":
-    test_CDLMAXBAR()
+    result: Tuple[np.ndarray] = func.PIVOTPOINTS(h, low, c)
+    pp, r1, s1, r2, s2 = result
+
+    expected_pp = np.full_like(h, np.nan, dtype=float)
+    expected_r1 = np.full_like(h, np.nan, dtype=float)
+    expected_r2 = np.full_like(h, np.nan, dtype=float)
+    expected_s1 = np.full_like(h, np.nan, dtype=float)
+    expected_s2 = np.full_like(h, np.nan, dtype=float)
+
+    expected_pp[1:] = (h[:-1] + low[:-1] + c[:-1]) / 3
+    expected_r1[1:] = 2 * expected_pp[1:] - low[:-1]
+    expected_r2[1:] = expected_pp[1:] + (h[:-1] - low[:-1])
+    expected_s1[1:] = 2 * expected_pp[1:] - h[:-1]
+    expected_s2[1:] = expected_pp[1:] - h[:-1] + low[:-1]
+
+    assert_array_equal(r1, expected_r1)
+    assert_array_equal(r2, expected_r2)
+    assert_array_equal(s1, expected_s1)
+    assert_array_equal(s2, expected_s2)
+    assert_array_equal(pp, expected_pp)
