@@ -276,8 +276,14 @@ def test_CDLWICKPERCENT():
 
 
 def test_CDLMAXBAR():
-    pass
+    import talib as func
+    import numpy as np
 
+    h = np.array([102.25, 104.00, 105.50, 104.25, 106.75, 105.00, 107.75, 108.50, 110.00, 111.25])
+    low = np.array([99.25, 100.75, 102.00, 101.50, 103.25, 102.00, 104.50, 105.25, 106.75, 107.50])
+
+    result: np.ndarray = func.CDLMAXBAR(h, low, timeperiod=5)
+    print(result)
 
 def test_ADR():
     pass
@@ -292,5 +298,4 @@ def test_PIVOT_POINTS():
 
 
 if __name__ == "__main__":
-    test_CDLWICK()
-    test_CDLWICKPERCENT()
+    test_CDLMAXBAR()

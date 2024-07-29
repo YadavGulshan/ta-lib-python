@@ -565,10 +565,8 @@ cdef extern from "ta-lib/ta_func.h":
     int TA_CDLWICK_Lookback()
     TA_RetCode TA_CDLMAXBAR(int    startIdx,
                             int    endIdx,
-                            const double inOpen[],
                             const double inHigh[],
                             const double inLow[],
-                            const double inClose[],
                             int           optInTimePeriod,
                             int *outBegIdx,
                             int *outNBElement,
