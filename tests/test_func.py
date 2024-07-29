@@ -70,7 +70,7 @@ def test_compatibility():
     assert_array_equal(r, [np.nan, np.nan, 1, 2, 3, 4, 5, 6, 7, 8])
     talib.set_compatibility(1)
     r = func.EMA(a, 3)
-    assert_array_equal(r, [np.nan, np.nan,1.25,2.125,3.0625,4.03125,5.015625,6.0078125,7.00390625,8.001953125])
+    assert_array_equal(r, [np.nan, np.nan, 1.25, 2.125, 3.0625, 4.03125, 5.015625, 6.0078125, 7.00390625, 8.001953125])
     talib.set_compatibility(0)
 
 
@@ -98,7 +98,7 @@ def test_MAX(series):
 
 
 def test_MOM():
-    values = np.array([90.0,88.0,89.0])
+    values = np.array([90.0, 88.0, 89.0])
     result = func.MOM(values, timeperiod=1)
     assert_array_equal(result, [np.nan, -2, 1])
     result = func.MOM(values, timeperiod=2)
@@ -146,10 +146,18 @@ def test_EMAEMA(series):
 
 
 def test_CDL3BLACKCROWS():
-    o = np.array([39.00, 39.00, 39.00, 39.00, 39.00, 39.00, 39.00, 39.00, 39.00, 39.00, 39.00, 39.00, 39.00, 39.00, 40.32, 40.51, 38.09, 35.00, 27.66, 30.80])
-    h = np.array([40.84, 40.84, 40.84, 40.84, 40.84, 40.84, 40.84, 40.84, 40.84, 40.84, 40.84, 40.84, 40.84, 40.84, 41.69, 40.84, 38.12, 35.50, 31.74, 32.51])
-    l = np.array([35.80, 35.80, 35.80, 35.80, 35.80, 35.80, 35.80, 35.80, 35.80, 35.80, 35.80, 35.80, 35.80, 35.80, 39.26, 36.73, 33.37, 30.03, 27.03, 28.31])
-    c = np.array([40.29, 40.29, 40.29, 40.29, 40.29, 40.29, 40.29, 40.29, 40.29, 40.29, 40.29, 40.29, 40.29, 40.29, 40.46, 37.08, 33.37, 30.03, 31.46, 28.31])
+    o = np.array(
+        [39.00, 39.00, 39.00, 39.00, 39.00, 39.00, 39.00, 39.00, 39.00, 39.00, 39.00, 39.00, 39.00, 39.00, 40.32, 40.51,
+         38.09, 35.00, 27.66, 30.80])
+    h = np.array(
+        [40.84, 40.84, 40.84, 40.84, 40.84, 40.84, 40.84, 40.84, 40.84, 40.84, 40.84, 40.84, 40.84, 40.84, 41.69, 40.84,
+         38.12, 35.50, 31.74, 32.51])
+    l = np.array(
+        [35.80, 35.80, 35.80, 35.80, 35.80, 35.80, 35.80, 35.80, 35.80, 35.80, 35.80, 35.80, 35.80, 35.80, 39.26, 36.73,
+         33.37, 30.03, 27.03, 28.31])
+    c = np.array(
+        [40.29, 40.29, 40.29, 40.29, 40.29, 40.29, 40.29, 40.29, 40.29, 40.29, 40.29, 40.29, 40.29, 40.29, 40.46, 37.08,
+         33.37, 30.03, 31.46, 28.31])
 
     result = func.CDL3BLACKCROWS(o, h, l, c)
     assert_array_equal(result, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -100, 0, 0])
@@ -157,29 +165,34 @@ def test_CDL3BLACKCROWS():
 
 def test_RSI():
     a = np.array([0.00000024, 0.00000024, 0.00000024,
-      0.00000024, 0.00000024, 0.00000023,
-      0.00000024, 0.00000024, 0.00000024,
-      0.00000024, 0.00000023, 0.00000024,
-      0.00000023, 0.00000024, 0.00000023,
-      0.00000024, 0.00000024, 0.00000023,
-      0.00000023, 0.00000023], dtype='float64')
+                  0.00000024, 0.00000024, 0.00000023,
+                  0.00000024, 0.00000024, 0.00000024,
+                  0.00000024, 0.00000023, 0.00000024,
+                  0.00000023, 0.00000024, 0.00000023,
+                  0.00000024, 0.00000024, 0.00000023,
+                  0.00000023, 0.00000023], dtype='float64')
     result = func.RSI(a, 10)
-    assert_array_equal(result, [np.nan,np.nan,np.nan,np.nan,np.nan,np.nan,np.nan,np.nan,np.nan,np.nan,0,0,0,0,0,0,0,0,0,0])
+    assert_array_equal(result,
+                       [np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, 0, 0, 0, 0, 0,
+                        0, 0, 0, 0, 0])
     result = func.RSI(a * 100000, 10)
-    assert_array_almost_equal(result, [np.nan,np.nan,np.nan,np.nan,np.nan,np.nan,np.nan,np.nan,np.nan,np.nan,33.333333333333329,51.351351351351347,39.491916859122398,51.84807024709005,42.25953803191981,52.101824405061215,52.101824405061215,43.043664867691085,43.043664867691085,43.043664867691085])
+    assert_array_almost_equal(result, [np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan,
+                                       33.333333333333329, 51.351351351351347, 39.491916859122398, 51.84807024709005,
+                                       42.25953803191981, 52.101824405061215, 52.101824405061215, 43.043664867691085,
+                                       43.043664867691085, 43.043664867691085])
 
 
 def test_MAVP():
-    a = np.array([1,5,3,4,7,3,8,1,4,6], dtype=float)
-    b = np.array([2,4,2,4,2,4,2,4,2,4], dtype=float)
+    a = np.array([1, 5, 3, 4, 7, 3, 8, 1, 4, 6], dtype=float)
+    b = np.array([2, 4, 2, 4, 2, 4, 2, 4, 2, 4], dtype=float)
     result = func.MAVP(a, b, minperiod=2, maxperiod=4)
-    assert_array_equal(result, [np.nan,np.nan,np.nan,3.25,5.5,4.25,5.5,4.75,2.5,4.75])
+    assert_array_equal(result, [np.nan, np.nan, np.nan, 3.25, 5.5, 4.25, 5.5, 4.75, 2.5, 4.75])
     sma2 = func.SMA(a, 2)
     assert_array_equal(result[4::2], sma2[4::2])
     sma4 = func.SMA(a, 4)
     assert_array_equal(result[3::2], sma4[3::2])
     result = func.MAVP(a, b, minperiod=2, maxperiod=3)
-    assert_array_equal(result, [np.nan,np.nan,4,4,5.5,4.666666666666667,5.5,4,2.5,3.6666666666666665])
+    assert_array_equal(result, [np.nan, np.nan, 4, 4, 5.5, 4.666666666666667, 5.5, 4, 2.5, 3.6666666666666665])
     sma3 = func.SMA(a, 3)
     assert_array_equal(result[2::2], sma2[2::2])
     assert_array_equal(result[3::2], sma3[3::2])
@@ -191,16 +204,93 @@ def test_MAXINDEX():
     a = np.array([1., 2, 3, 4, 5, 6, 7, 8, 7, 7, 3, 4, 5, 6, 7, 8, 9, 2, 3, 4, 5, 15])
     b = func.MA(a, 10)
     c = func.MAXINDEX(b, 10)
-    assert_array_equal(c, [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,16,16,16,21])
+    assert_array_equal(c, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 16, 16, 16, 21])
     d = np.array([1., 2, 3])
     e = func.MAXINDEX(d, 10)
-    assert_array_equal(e, [0,0,0])
+    assert_array_equal(e, [0, 0, 0])
 
 
-def test_PP_info():
-    from talib import abstract as ta
-    print(ta.Function('PIVOTPOINTS').info)
+def test_XBAR():
+    import talib as func
+    import numpy as np
+    a = np.array([10., 9, 4, 5, 6, 7, 8, 9, 8, 8, 4, 5, 6, 7, 8, 9, 10])
+    xhigh, xlow = func.XBAR(a, a, timeperiod=5)
+    nan = np.NAN
+    assert_array_equal(xhigh, [nan, nan, nan, nan, 10., 9., 8., 9., 9., 9., 9., 9., 8., 8., 8., 9., 10.])
+    assert_array_equal(xlow, [nan, nan, nan, nan, 4., 4., 4., 5., 6., 7., 4., 4., 4., 4., 4., 5., 6., ])
+
+
+def test_AVGXBAR():
+    import talib as func
+    import numpy as np
+
+    def rolling_average(arr, window_size):
+        cumsum = np.cumsum(np.insert(arr, 0, 0))
+        return (cumsum[window_size:] - cumsum[:-window_size]) / window_size
+
+    a = np.array([10., 9, 4, 5, 6, 7, 8, 9, 8, 8, 4, 5, 6, 7, 8, 9, 10])
+    xhigh, xlow, xvol = func.AVGXBAR(a, a, a, timeperiod=5)
+    xhigh: np.ndarray
+    assert_array_equal(xlow[4:], rolling_average(a, 5))
+
+
+def test_CDLWICK():
+    import talib as func
+    import numpy as np
+
+    o = np.array([100.00, 101.50, 103.25, 102.75, 104.00, 103.50, 105.25, 106.00, 107.50, 108.75])
+    h = np.array([102.25, 104.00, 105.50, 104.25, 106.75, 105.00, 107.75, 108.50, 110.00, 111.25])
+    low = np.array([99.25, 100.75, 102.00, 101.50, 103.25, 102.00, 104.50, 105.25, 106.75, 107.50])
+    c = np.array([101.75, 103.50, 102.50, 104.25, 103.75, 105.50, 106.25, 107.75, 109.00, 110.50])
+
+    def calculate_wick_size():
+        upper_wick = h - np.maximum(o, c)
+        lower_wick = np.minimum(o, c) - low
+
+        return lower_wick + upper_wick
+
+    result: np.ndarray = func.CDLWICK(o, h, low, c)
+    assert len(result) == len(o)
+    assert_array_equal(calculate_wick_size(), result)
+
+
+def test_CDLWICKPERCENT():
+    import talib as func
+    import numpy as np
+
+    o = np.array([100.00, 101.50, 103.25, 102.75, 104.00, 103.50, 105.25, 106.00, 107.50, 108.75])
+    h = np.array([102.25, 104.00, 105.50, 104.25, 106.75, 105.00, 107.75, 108.50, 110.00, 111.25])
+    low = np.array([99.25, 100.75, 102.00, 101.50, 103.25, 102.00, 104.50, 105.25, 106.75, 107.50])
+    c = np.array([101.75, 103.50, 102.50, 104.25, 103.75, 105.50, 106.25, 107.75, 109.00, 110.50])
+
+    def calculate_wick_percent():
+        upper_wick = h - np.maximum(o, c)
+        lower_wick = np.minimum(o, c) - low
+        bar_size = h - low
+
+        return (lower_wick + upper_wick) / bar_size
+
+    result: np.ndarray = func.CDLWICKPERCENT(o, h, low, c)
+    assert len(result) == len(o)
+    assert_array_equal(calculate_wick_percent(), result)
+
+
+def test_CDLMAXBAR():
+    pass
+
+
+def test_ADR():
+    pass
+
+
+def test_ABR():
+    pass
+
+
+def test_PIVOT_POINTS():
+    pass
 
 
 if __name__ == "__main__":
-    test_PP_info()
+    test_CDLWICK()
+    test_CDLWICKPERCENT()
