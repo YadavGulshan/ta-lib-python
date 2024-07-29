@@ -1,10 +1,11 @@
 .PHONY: build
 
 build:
-	python3 setup.py build_ext --inplace
+	python3 -m pip install --upgrade build
+	python3 -m build
 
 install:
-	python3 setup.py install
+	python3 -m pip install .
 
 talib/_func.pxi: tools/generate_func.py
 	python3 tools/generate_func.py > talib/_func.pxi

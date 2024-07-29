@@ -5539,6 +5539,42 @@ def stream_VAR( np.ndarray real not None , int timeperiod=-2**31 , double nbdev=
 
 @wraparound(False)  # turn off relative indexing from end of lists
 @boundscheck(False) # turn off bounds-checking for entire function
+def stream_VWAP( np.ndarray high not None , np.ndarray low not None , np.ndarray close not None , np.ndarray volume not None ):
+    """ VWAP(high, low, close, volume)
+
+    Volume Weighted Average Price (Volume Indicators)
+
+    Inputs:
+        prices: ['high', 'low', 'close', 'volume']
+    Outputs:
+        real
+    """
+    cdef:
+        np.npy_intp length
+        TA_RetCode retCode
+        double* high_data
+        double* low_data
+        double* close_data
+        double* volume_data
+        int outbegidx
+        int outnbelement
+        double outreal
+    high = check_array(high)
+    high_data = <double*>high.data
+    low = check_array(low)
+    low_data = <double*>low.data
+    close = check_array(close)
+    close_data = <double*>close.data
+    volume = check_array(volume)
+    volume_data = <double*>volume.data
+    length = check_length4(high, low, close, volume)
+    outreal = NaN
+    retCode = lib.TA_VWAP( <int>(length) - 1 , <int>(length) - 1 , high_data , low_data , close_data , volume_data , &outbegidx , &outnbelement , &outreal )
+    _ta_check_success("TA_VWAP", retCode)
+    return outreal 
+
+@wraparound(False)  # turn off relative indexing from end of lists
+@boundscheck(False) # turn off bounds-checking for entire function
 def stream_WCLPRICE( np.ndarray high not None , np.ndarray low not None , np.ndarray close not None ):
     """ WCLPRICE(high, low, close)
 

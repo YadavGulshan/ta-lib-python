@@ -623,6 +623,18 @@ cdef extern from "ta-lib/ta_func.h":
                            double        outRealLowerBand[])
     int TA_ACCBANDS_Lookback(int           optInTimePeriod)
 
+    TA_RetCode TA_VWAP(int    startIdx,
+                       int    endIdx,
+                       const double inHigh[],
+                       const double inLow[],
+                       const double inClose[],
+                       const double inVolume[],
+                       int *outBegIdx,
+                       int *outNBElement,
+                       double        outReal[])
+
+    int TA_VWAP_Lookback()
+
 
 
 
