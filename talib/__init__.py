@@ -313,7 +313,8 @@ __function_groups__ = {
         'AD',
         'ADOSC',
         'OBV',
-        'PVT'
+        'PVT',
+        'VWAP'
         ],
     }
 
