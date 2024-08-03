@@ -109,7 +109,7 @@ for f in functions:
 
         if var.endswith('[]'):
             var = cleanup(var[:-2])
-            assert arg.startswith('const double'), arg
+            assert arg.startswith('const double') or arg.startswith('const int'), arg
             print('np.ndarray %s not None' % var, end=' ')
             docs.append(var)
             docs.append(', ')
@@ -198,6 +198,8 @@ for f in functions:
             var = cleanup(var[:-2])
             if 'double' in arg:
                 cast = '<double*>'
+            elif 'int' in arg:
+                cast = '<int*>'
             else:
                 assert False, arg
             print('    %s = check_array(%s)' % (var, var))

@@ -5503,7 +5503,15 @@ def VAR( np.ndarray real not None , int timeperiod=-2**31 , double nbdev=-4e37 )
 @wraparound(False)  # turn off relative indexing from end of lists
 @boundscheck(False) # turn off bounds-checking for entire function
 def VWAP( np.ndarray high not None , np.ndarray low not None , np.ndarray close not None , np.ndarray volume not None ):
-    """ VWAP(high, low, close, volume)"""
+    """ VWAP(high, low, close, volume)
+
+    Volume Weighted Average Price (Volume Indicators)
+
+    Inputs:
+        prices: ['volume']
+    Outputs:
+        real
+    """
     cdef:
         np.npy_intp length
         int begidx, endidx, lookback

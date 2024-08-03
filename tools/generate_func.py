@@ -242,7 +242,7 @@ for f in functions:
 
         if var.endswith('[]'):
             var = cleanup(var[:-2])
-            assert arg.startswith('const double'), arg
+            assert arg.startswith('const double') or arg.startswith('const int'), arg
             print('np.ndarray %s not None' % var, end=' ')
             docs.append(var)
             docs.append(', ')
@@ -315,19 +315,29 @@ for f in functions:
             var = cleanup(var[:-2])
             if 'double' in arg:
                 cast = '<double*>'
+            elif 'int' in arg:
+                cast = '<int*>'
             else:
                 assert False, arg
             print('    %s = check_array(%s)' % (var, var))
 
     # check all input array lengths are the same
     inputs = []
+    input_types = []
     for arg in args:
         var = arg.split()[-1]
         if 'out' in var:
             break
         if var.endswith('[]'):
             var = cleanup(var[:-2])
+            var_type = 'double'
+            if 'double' in arg:
+                pass
+            elif 'int' in arg:
+                var_type = 'int'
+            input_types.append(var_type)
             inputs.append(var)
+
     if len(inputs) == 1:
         print('    length = %s.shape[0]' % inputs[0])
     else:
@@ -335,7 +345,8 @@ for f in functions:
 
     # check for all input values are non-NaN
     print(
-        '    begidx = check_begidx%s(length, %s)' % (len(inputs), ', '.join('<double*>(%s.data)' % s for s in inputs)))
+        '    begidx = check_begidx%s(length, %s)' % (len(inputs), ', '.join(
+            '<%s*>(%s.data)' % (input_type, _input) for _input, input_type in zip(inputs, input_types))))
 
     print('    endidx = <int>length - begidx - 1')
     print('    lookback = begidx + lib.%s_Lookback(' % name, end=' ')

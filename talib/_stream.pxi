@@ -5545,7 +5545,7 @@ def stream_VWAP( np.ndarray high not None , np.ndarray low not None , np.ndarray
     Volume Weighted Average Price (Volume Indicators)
 
     Inputs:
-        prices: ['high', 'low', 'close', 'volume']
+        prices: ['volume']
     Outputs:
         real
     """
