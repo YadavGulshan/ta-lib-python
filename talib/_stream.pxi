@@ -5539,13 +5539,13 @@ def stream_VAR( np.ndarray real not None , int timeperiod=-2**31 , double nbdev=
 
 @wraparound(False)  # turn off relative indexing from end of lists
 @boundscheck(False) # turn off bounds-checking for entire function
-def stream_VWAP( np.ndarray high not None , np.ndarray low not None , np.ndarray close not None , np.ndarray volume not None ):
-    """ VWAP(high, low, close, volume)
+def stream_VWAP( np.ndarray high not None , np.ndarray low not None , np.ndarray close not None , np.ndarray volume not None , np.ndarray timestamp not None ):
+    """ VWAP(high, low, close, volume, timestamp)
 
     Volume Weighted Average Price (Volume Indicators)
 
     Inputs:
-        prices: ['volume']
+        prices: ['timeStamp']
     Outputs:
         real
     """
@@ -5556,6 +5556,7 @@ def stream_VWAP( np.ndarray high not None , np.ndarray low not None , np.ndarray
         double* low_data
         double* close_data
         double* volume_data
+        int* timestamp_data
         int outbegidx
         int outnbelement
         double outreal
@@ -5567,9 +5568,11 @@ def stream_VWAP( np.ndarray high not None , np.ndarray low not None , np.ndarray
     close_data = <double*>close.data
     volume = check_array(volume)
     volume_data = <double*>volume.data
-    length = check_length4(high, low, close, volume)
+    timestamp = check_array(timestamp)
+    timestamp_data = <int*>timestamp.data
+    length = check_length5(high, low, close, volume, timestamp)
     outreal = NaN
-    retCode = lib.TA_VWAP( <int>(length) - 1 , <int>(length) - 1 , high_data , low_data , close_data , volume_data , &outbegidx , &outnbelement , &outreal )
+    retCode = lib.TA_VWAP( <int>(length) - 1 , <int>(length) - 1 , high_data , low_data , close_data , volume_data , timestamp_data , &outbegidx , &outnbelement , &outreal )
     _ta_check_success("TA_VWAP", retCode)
     return outreal 
 

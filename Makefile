@@ -7,13 +7,13 @@ build:
 install:
 	python3 -m pip install .
 
-talib/_func.pxi: tools/generate_func.py
+_func: tools/generate_func.py
 	python3 tools/generate_func.py > talib/_func.pxi
 
-talib/_stream.pxi: tools/generate_stream.py
+_stream: tools/generate_stream.py
 	python3 tools/generate_stream.py > talib/_stream.pxi
 
-generate: talib/_func.pxi talib/_stream.pxi
+generate: _func _stream
 
 cython:
 	cython --directive emit_code_comments=False talib/_ta_lib.pyx

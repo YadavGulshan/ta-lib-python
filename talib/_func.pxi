@@ -5502,13 +5502,13 @@ def VAR( np.ndarray real not None , int timeperiod=-2**31 , double nbdev=-4e37 )
 
 @wraparound(False)  # turn off relative indexing from end of lists
 @boundscheck(False) # turn off bounds-checking for entire function
-def VWAP( np.ndarray high not None , np.ndarray low not None , np.ndarray close not None , np.ndarray volume not None ):
-    """ VWAP(high, low, close, volume)
+def VWAP( np.ndarray high not None , np.ndarray low not None , np.ndarray close not None , np.ndarray volume not None , np.ndarray timestamp not None ):
+    """ VWAP(high, low, close, volume, timestamp)
 
     Volume Weighted Average Price (Volume Indicators)
 
     Inputs:
-        prices: ['volume']
+        prices: ['timeStamp']
     Outputs:
         real
     """
@@ -5523,12 +5523,13 @@ def VWAP( np.ndarray high not None , np.ndarray low not None , np.ndarray close 
     low = check_array(low)
     close = check_array(close)
     volume = check_array(volume)
-    length = check_length4(high, low, close, volume)
-    begidx = check_begidx4(length, <double*>(high.data), <double*>(low.data), <double*>(close.data), <double*>(volume.data))
+    timestamp = check_array(timestamp)
+    length = check_length5(high, low, close, volume, timestamp)
+    begidx = check_begidx5(length, <double*>(high.data), <double*>(low.data), <double*>(close.data), <double*>(volume.data), <int*>(timestamp.data))
     endidx = <int>length - begidx - 1
     lookback = begidx + lib.TA_VWAP_Lookback( )
     outreal = make_double_array(length, lookback)
-    retCode = lib.TA_VWAP( 0 , endidx , <double *>(high.data)+begidx , <double *>(low.data)+begidx , <double *>(close.data)+begidx , <double *>(volume.data)+begidx , &outbegidx , &outnbelement , <double *>(outreal.data)+lookback )
+    retCode = lib.TA_VWAP( 0 , endidx , <double *>(high.data)+begidx , <double *>(low.data)+begidx , <double *>(close.data)+begidx , <double *>(volume.data)+begidx , <int *>(timestamp.data)+begidx , &outbegidx , &outnbelement , <double *>(outreal.data)+lookback )
     _ta_check_success("TA_VWAP", retCode)
     return outreal 
 
