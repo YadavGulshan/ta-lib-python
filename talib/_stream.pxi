@@ -9,19 +9,7 @@ np.import_array() # Initialize the NumPy C API
 @wraparound(False)  # turn off relative indexing from end of lists
 @boundscheck(False) # turn off bounds-checking for entire function
 def stream_ACCBANDS( np.ndarray high not None , np.ndarray low not None , np.ndarray close not None , int timeperiod=-2**31 ):
-    """ ACCBANDS(high, low, close[, timeperiod=?])
-
-    Acceleration Bands (Overlap Studies)
-
-    Inputs:
-        prices: ['high', 'low', 'close']
-    Parameters:
-        timeperiod: 20
-    Outputs:
-        upperband
-        middleband
-        lowerband
-    """
+    """ ACCBANDS(high, low, close[, timeperiod=?])"""
     cdef:
         np.npy_intp length
         TA_RetCode retCode
@@ -77,17 +65,7 @@ def stream_ACOS( np.ndarray real not None ):
 @wraparound(False)  # turn off relative indexing from end of lists
 @boundscheck(False) # turn off bounds-checking for entire function
 def stream_ABR( np.ndarray open not None , np.ndarray close not None , int timeperiod=-2**31 ):
-    """ ABR(open, close[, timeperiod=?])
-
-    Average Bar Range (Volatility Indicators)
-
-    Inputs:
-        prices: ['open', 'close']
-    Parameters:
-        timeperiod: 14
-    Outputs:
-        real
-    """
+    """ ABR(open, close[, timeperiod=?])"""
     cdef:
         np.npy_intp length
         TA_RetCode retCode
@@ -472,17 +450,7 @@ def stream_ATR( np.ndarray high not None , np.ndarray low not None , np.ndarray 
 @wraparound(False)  # turn off relative indexing from end of lists
 @boundscheck(False) # turn off bounds-checking for entire function
 def stream_ADR( np.ndarray high not None , np.ndarray low not None , int timeperiod=-2**31 ):
-    """ ADR(high, low[, timeperiod=?])
-
-    Average Daily Range (Volatility Indicators)
-
-    Inputs:
-        prices: ['high', 'low']
-    Parameters:
-        timeperiod: 14
-    Outputs:
-        real
-    """
+    """ ADR(high, low[, timeperiod=?])"""
     cdef:
         np.npy_intp length
         TA_RetCode retCode
@@ -540,17 +508,7 @@ def stream_AVGPRICE( np.ndarray open not None , np.ndarray high not None , np.nd
 @wraparound(False)  # turn off relative indexing from end of lists
 @boundscheck(False) # turn off bounds-checking for entire function
 def stream_AVGDEV( np.ndarray real not None , int timeperiod=-2**31 ):
-    """ AVGDEV(real[, timeperiod=?])
-
-    Average Deviation (Price Transform)
-
-    Inputs:
-        real: (any ndarray)
-    Parameters:
-        timeperiod: 14
-    Outputs:
-        real
-    """
+    """ AVGDEV(real[, timeperiod=?])"""
     cdef:
         np.npy_intp length
         TA_RetCode retCode
@@ -569,19 +527,7 @@ def stream_AVGDEV( np.ndarray real not None , int timeperiod=-2**31 ):
 @wraparound(False)  # turn off relative indexing from end of lists
 @boundscheck(False) # turn off bounds-checking for entire function
 def stream_AVGXBAR( np.ndarray high not None , np.ndarray low not None , np.ndarray volume not None , int timeperiod=-2**31 ):
-    """ AVGXBAR(high, low, volume[, timeperiod=?])
-
-    Avg X-Bar: Avg High, Low, and Volume lines for the last N periods (Overlap Studies)
-
-    Inputs:
-        prices: ['high', 'low', 'volume']
-    Parameters:
-        timeperiod: 1
-    Outputs:
-        high
-        low
-        volume
-    """
+    """ AVGXBAR(high, low, volume[, timeperiod=?])"""
     cdef:
         np.npy_intp length
         TA_RetCode retCode
@@ -2274,17 +2220,7 @@ def stream_CDLMATHOLD( np.ndarray open not None , np.ndarray high not None , np.
 @wraparound(False)  # turn off relative indexing from end of lists
 @boundscheck(False) # turn off bounds-checking for entire function
 def stream_CDLMAXBAR( np.ndarray high not None , np.ndarray low not None , int timeperiod=-2**31 ):
-    """ CDLMAXBAR(high, low[, timeperiod=?])
-
-    CDLMAXBAR: Highest bar over a specified period (Statistic Functions)
-
-    Inputs:
-        prices: ['high', 'low']
-    Parameters:
-        timeperiod: 1
-    Outputs:
-        real
-    """
+    """ CDLMAXBAR(high, low[, timeperiod=?])"""
     cdef:
         np.npy_intp length
         TA_RetCode retCode
@@ -2958,15 +2894,7 @@ def stream_CDLUPSIDEGAP2CROWS( np.ndarray open not None , np.ndarray high not No
 @wraparound(False)  # turn off relative indexing from end of lists
 @boundscheck(False) # turn off bounds-checking for entire function
 def stream_CDLWICK( np.ndarray open not None , np.ndarray high not None , np.ndarray low not None , np.ndarray close not None ):
-    """ CDLWICK(open, high, low, close)
-
-    CDLWICK: Wick length of current bar (Statistic Functions)
-
-    Inputs:
-        prices: ['open', 'high', 'low', 'close']
-    Outputs:
-        real
-    """
+    """ CDLWICK(open, high, low, close)"""
     cdef:
         np.npy_intp length
         TA_RetCode retCode
@@ -2994,15 +2922,7 @@ def stream_CDLWICK( np.ndarray open not None , np.ndarray high not None , np.nda
 @wraparound(False)  # turn off relative indexing from end of lists
 @boundscheck(False) # turn off bounds-checking for entire function
 def stream_CDLWICKPERCENT( np.ndarray open not None , np.ndarray high not None , np.ndarray low not None , np.ndarray close not None ):
-    """ CDLWICKPERCENT(open, high, low, close)
-
-    CDLWICKPERCENT: Wick length of current bar as a percentage of the bar (Statistic Functions)
-
-    Inputs:
-        prices: ['open', 'high', 'low', 'close']
-    Outputs:
-        real
-    """
+    """ CDLWICKPERCENT(open, high, low, close)"""
     cdef:
         np.npy_intp length
         TA_RetCode retCode
@@ -3555,17 +3475,7 @@ def stream_HT_TRENDMODE( np.ndarray real not None ):
 @wraparound(False)  # turn off relative indexing from end of lists
 @boundscheck(False) # turn off bounds-checking for entire function
 def stream_IMI( np.ndarray open not None , np.ndarray close not None , int timeperiod=-2**31 ):
-    """ IMI(open, close[, timeperiod=?])
-
-    Intraday Momentum Index (Momentum Indicators)
-
-    Inputs:
-        prices: ['open', 'close']
-    Parameters:
-        timeperiod: 14
-    Outputs:
-        real
-    """
+    """ IMI(open, close[, timeperiod=?])"""
     cdef:
         np.npy_intp length
         TA_RetCode retCode
@@ -4596,17 +4506,7 @@ def stream_PPO( np.ndarray real not None , int fastperiod=-2**31 , int slowperio
 @wraparound(False)  # turn off relative indexing from end of lists
 @boundscheck(False) # turn off bounds-checking for entire function
 def stream_PVT( np.ndarray close not None , np.ndarray volume not None , int timeperiod=-2**31 ):
-    """ PVT(close, volume[, timeperiod=?])
-
-    Price Volume Trend: prevPvt + volume * (close-prevClose)/prevClose (Volume Indicators)
-
-    Inputs:
-        prices: ['close', 'volume']
-    Parameters:
-        timeperiod: 1
-    Outputs:
-        real
-    """
+    """ PVT(close, volume[, timeperiod=?])"""
     cdef:
         np.npy_intp length
         TA_RetCode retCode
@@ -4628,19 +4528,7 @@ def stream_PVT( np.ndarray close not None , np.ndarray volume not None , int tim
 @wraparound(False)  # turn off relative indexing from end of lists
 @boundscheck(False) # turn off bounds-checking for entire function
 def stream_PIVOTPOINTS( np.ndarray high not None , np.ndarray low not None , np.ndarray close not None ):
-    """ PIVOTPOINTS(high, low, close)
-
-    Pivot Points (Overlap Studies)
-
-    Inputs:
-        prices: ['high', 'low', 'close']
-    Outputs:
-        pivotpoint
-        pivotpointresistance1
-        pivotpointsupport1
-        pivotpointresistance2
-        pivotpointsupport2
-    """
+    """ PIVOTPOINTS(high, low, close)"""
     cdef:
         np.npy_intp length
         TA_RetCode retCode
@@ -5540,15 +5428,7 @@ def stream_VAR( np.ndarray real not None , int timeperiod=-2**31 , double nbdev=
 @wraparound(False)  # turn off relative indexing from end of lists
 @boundscheck(False) # turn off bounds-checking for entire function
 def stream_VWAP( np.ndarray high not None , np.ndarray low not None , np.ndarray close not None , np.ndarray volume not None , np.ndarray timestamp not None ):
-    """ VWAP(high, low, close, volume, timestamp)
-
-    Volume Weighted Average Price (Volume Indicators)
-
-    Inputs:
-        prices: ['timeStamp']
-    Outputs:
-        real
-    """
+    """ VWAP(high, low, close, volume, timestamp)"""
     cdef:
         np.npy_intp length
         TA_RetCode retCode
@@ -5676,18 +5556,7 @@ def stream_WMA( np.ndarray real not None , int timeperiod=-2**31 ):
 @wraparound(False)  # turn off relative indexing from end of lists
 @boundscheck(False) # turn off bounds-checking for entire function
 def stream_XBAR( np.ndarray high not None , np.ndarray low not None , int timeperiod=-2**31 ):
-    """ XBAR(high, low[, timeperiod=?])
-
-    X-Bar: High and Low lines for the last N periods (Overlap Studies)
-
-    Inputs:
-        prices: ['high', 'low']
-    Parameters:
-        timeperiod: 1
-    Outputs:
-        xhigh
-        xlow
-    """
+    """ XBAR(high, low[, timeperiod=?])"""
     cdef:
         np.npy_intp length
         TA_RetCode retCode

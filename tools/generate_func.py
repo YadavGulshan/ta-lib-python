@@ -106,6 +106,20 @@ cdef np.npy_intp check_length4(np.ndarray a1, np.ndarray a2, np.ndarray a3, np.n
     if length != a4.shape[0]:
         raise Exception("input array lengths are different")
     return length
+    
+cdef np.npy_intp check_length5(np.ndarray a1, np.ndarray a2, np.ndarray a3, np.ndarray a4, np.ndarray a5) except -1:
+    cdef:
+        np.npy_intp length
+    length = a1.shape[0]
+    if length != a2.shape[0]:
+        raise Exception("input array lengths are different")
+    if length != a3.shape[0]:
+        raise Exception("input array lengths are different")
+    if length != a4.shape[0]:
+        raise Exception("input array lengths are different")
+    if length != a5.shape[0]:
+        raise Exception("input array lengths are different")
+    return length
 
 cdef np.npy_int check_begidx1(np.npy_intp length, double* a1):
     cdef:
@@ -163,6 +177,116 @@ cdef np.npy_int check_begidx4(np.npy_intp length, double* a1, double* a2, double
         if val != val:
             continue
         val = a4[i]
+        if val != val:
+            continue
+        return i
+    else:
+        return length - 1
+        
+cdef np.npy_int check_begidx5(np.npy_intp length, double* a1, double* a2, double* a3, double* a4, double* a5):
+    cdef:
+        double val
+    for i from 0 <= i < length:
+        val = a1[i]
+        if val != val:
+            continue
+        val = a2[i]
+        if val != val:
+            continue
+        val = a3[i]
+        if val != val:
+            continue
+        val = a4[i]
+        if val != val:
+            continue
+        val = a5[i]
+        if val != val:
+            continue
+        return i
+    else:
+        return length - 1
+
+# Integer version of check_begidx functions, I'm assuming only the last one will be of type int.
+# Don't know which type of indicator will only be using a timestamp. But just in case.        
+cdef np.npy_int check_begidx1_int(np.npy_intp length, double* a1):
+    cdef:
+        double val
+    for i from 0 <= i < length:
+        val = a1[i]
+        if val != val:
+            continue
+        return i
+    else:
+        return length - 1
+
+cdef np.npy_int check_begidx2_int(np.npy_intp length, double* a1, int* a2):
+    cdef:
+        double val
+    for i from 0 <= i < length:
+        val = a1[i]
+        if val != val:
+            continue
+        val = a2[i]
+        if val != val:
+            continue
+        return i
+    else:
+        return length - 1
+
+cdef np.npy_int check_begidx3_int(np.npy_intp length, double* a1, double* a2, int* a3):
+    cdef:
+        double val
+    for i from 0 <= i < length:
+        val = a1[i]
+        if val != val:
+            continue
+        val = a2[i]
+        if val != val:
+            continue
+        val = a3[i]
+        if val != val:
+            continue
+        return i
+    else:
+        return length - 1
+
+cdef np.npy_int check_begidx4_int(np.npy_intp length, double* a1, double* a2, double* a3, int* a4):
+    cdef:
+        double val
+    for i from 0 <= i < length:
+        val = a1[i]
+        if val != val:
+            continue
+        val = a2[i]
+        if val != val:
+            continue
+        val = a3[i]
+        if val != val:
+            continue
+        val = a4[i]
+        if val != val:
+            continue
+        return i
+    else:
+        return length - 1
+        
+cdef np.npy_int check_begidx5_int(np.npy_intp length, double* a1, double* a2, double* a3, double* a4, int* a5):
+    cdef:
+        double val
+    for i from 0 <= i < length:
+        val = a1[i]
+        if val != val:
+            continue
+        val = a2[i]
+        if val != val:
+            continue
+        val = a3[i]
+        if val != val:
+            continue
+        val = a4[i]
+        if val != val:
+            continue
+        val = a5[i]
         if val != val:
             continue
         return i
@@ -344,9 +468,20 @@ for f in functions:
         print('    length = check_length%s(%s)' % (len(inputs), ', '.join(inputs)))
 
     # check for all input values are non-NaN
-    print(
-        '    begidx = check_begidx%s(length, %s)' % (len(inputs), ', '.join(
-            '<%s*>(%s.data)' % (input_type, _input) for _input, input_type in zip(inputs, input_types))))
+    if all([input_type == 'double' for input_type in input_types]):
+        print(
+            '    begidx = check_begidx%s(length, %s)' % (len(inputs), ', '.join(
+                '<%s*>(%s.data)' % (input_type, _input)
+                for _input, input_type in zip(inputs, input_types)
+            ))
+        )
+    else:
+        print(
+            '    begidx = check_begidx%s_int(length, %s)' % (len(inputs), ', '.join(
+                '<%s*>(%s.data)' % (input_type, _input)
+                for _input, input_type in zip(inputs, input_types)
+            ))
+        )
 
     print('    endidx = <int>length - begidx - 1')
     print('    lookback = begidx + lib.%s_Lookback(' % name, end=' ')
