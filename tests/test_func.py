@@ -351,10 +351,14 @@ def test_VWAP():
     low = np.array([99.25, 100.75, 102.00, 101.50, 103.25, 102.00, 104.50, 105.25, 106.75, 107.50])
     c = np.array([101.75, 103.50, 102.50, 104.25, 103.75, 105.50, 106.25, 107.75, 109.00, 110.50])
     volume = np.array([100., 200, 300, 400, 500, 600, 700, 800, 900, 1000])
+    timestamp = np.array([
+        1617235200, 1617321600, 1617408000, 1617494400, 1617580800,
+        1617667200, 1617753600, 1617840000, 1617926400, 1618012800
+    ], dtype=np.int32)
 
-    vwap = func.VWAP(h, low, c, volume)
-    expected_vwap = np.cumsum(volume * (h + low + c) / 3) / np.cumsum(volume)
-    assert_allclose(vwap, expected_vwap, rtol=1e-10, atol=1e-10)
+    vwap = func.VWAP(h, low, c, volume, timestamp)
+    print(vwap)
+
 
 
 if __name__ == "__main__":

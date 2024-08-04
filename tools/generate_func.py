@@ -68,9 +68,12 @@ np.import_array() # Initialize the NumPy C API
 cimport _ta_lib as lib
 from _ta_lib cimport TA_RetCode
 
-cdef np.ndarray check_array(np.ndarray real):
-    if PyArray_TYPE(real) != np.NPY_DOUBLE:
-        raise Exception("input array type is not double")
+cdef np.ndarray check_array(np.ndarray real) except*:
+    cdef int dtype = PyArray_TYPE(real)
+
+    if dtype not in (np.NPY_DOUBLE, np.NPY_INT):
+        raise TypeError(f"Input array must be of type double or int, got {np.dtype(real.dtype).name}")
+    
     if real.ndim != 1:
         raise Exception("input array has wrong dimensions")
     if not (PyArray_FLAGS(real) & np.NPY_C_CONTIGUOUS):
