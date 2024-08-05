@@ -349,9 +349,18 @@ def test_VWAP():
     import numpy as np
     import pandas as pd
 
-    def calculate_vwap(group):
+    def calculate_vwap_with_std(group):
         typical_price = (group['high'] + group['low'] + group['close']) / 3
-        return (typical_price * group['volume']).cumsum() / group['volume'].cumsum()
+        vwap = (typical_price * group['volume']).cumsum() / group['volume'].cumsum()
+        var_sum = ((typical_price - vwap) ** 2 * group['volume']).cumsum()
+        vwap_std = np.sqrt(var_sum / group['volume'].cumsum())
+        result = pd.DataFrame({'vwap': vwap, 'vwap_std': vwap_std})
+
+        for i in range(1, 4):
+            result[f'vwap_ub_{i}'] = vwap + vwap_std * i
+            result[f'vwap_lb_{i}'] = vwap - vwap_std * i
+
+        return result
 
     data = {
         "timestamp": pd.date_range(start="2024-04-01 08:30:00", periods=20, freq="5h"),
@@ -364,11 +373,20 @@ def test_VWAP():
     df = pd.DataFrame(data)
     df['timestamp_unix'] = df['timestamp'].astype(int) // 10 ** 9
     df['date'] = df['timestamp'].dt.date
-    df['vwap'] = df.groupby('date', group_keys=False).apply(calculate_vwap)
+    result = df.groupby('date', group_keys=False).apply(calculate_vwap_with_std)
+    df = df.merge(result, left_index=True, right_index=True)
 
-    vwap = func.VWAP(df['high'], df['low'], df['close'], df['volume'], df['timestamp_unix'].values.astype(np.int32))
+    res_vwap, ub1, lb1, ub2, lb2, ub3, lb3 = func.VWAP(df['high'], df['low'], df['close'], df['volume'], df['timestamp_unix'].values.astype(np.int32))
 
-    assert_array_almost_equal(vwap, df['vwap'])
+    assert_array_almost_equal(res_vwap, df['vwap'])
+    assert_array_almost_equal(ub1, df['vwap_ub_1'])
+    assert_array_almost_equal(lb1, df['vwap_lb_1'])
+    assert_array_almost_equal(ub2, df['vwap_ub_2'])
+    assert_array_almost_equal(lb2, df['vwap_lb_2'])
+    assert_array_almost_equal(ub3, df['vwap_ub_3'])
+    assert_array_almost_equal(lb3, df['vwap_lb_3'])
+
+
 
 
 if __name__ == "__main__":

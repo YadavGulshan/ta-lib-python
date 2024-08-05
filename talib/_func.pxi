@@ -5638,6 +5638,12 @@ def VWAP( np.ndarray high not None , np.ndarray low not None , np.ndarray close 
         prices: ['timeStamp']
     Outputs:
         real
+        upperband1
+        lowerband1
+        upperband2
+        lowerband2
+        upperband3
+        lowerband3
     """
     cdef:
         np.npy_intp length
@@ -5646,6 +5652,12 @@ def VWAP( np.ndarray high not None , np.ndarray low not None , np.ndarray close 
         int outbegidx
         int outnbelement
         np.ndarray outreal
+        np.ndarray outrealupperband1
+        np.ndarray outreallowerband1
+        np.ndarray outrealupperband2
+        np.ndarray outreallowerband2
+        np.ndarray outrealupperband3
+        np.ndarray outreallowerband3
     high = check_array(high)
     low = check_array(low)
     close = check_array(close)
@@ -5656,9 +5668,15 @@ def VWAP( np.ndarray high not None , np.ndarray low not None , np.ndarray close 
     endidx = <int>length - begidx - 1
     lookback = begidx + lib.TA_VWAP_Lookback( )
     outreal = make_double_array(length, lookback)
-    retCode = lib.TA_VWAP( 0 , endidx , <double *>(high.data)+begidx , <double *>(low.data)+begidx , <double *>(close.data)+begidx , <double *>(volume.data)+begidx , <int *>(timestamp.data)+begidx , &outbegidx , &outnbelement , <double *>(outreal.data)+lookback )
+    outrealupperband1 = make_double_array(length, lookback)
+    outreallowerband1 = make_double_array(length, lookback)
+    outrealupperband2 = make_double_array(length, lookback)
+    outreallowerband2 = make_double_array(length, lookback)
+    outrealupperband3 = make_double_array(length, lookback)
+    outreallowerband3 = make_double_array(length, lookback)
+    retCode = lib.TA_VWAP( 0 , endidx , <double *>(high.data)+begidx , <double *>(low.data)+begidx , <double *>(close.data)+begidx , <double *>(volume.data)+begidx , <int *>(timestamp.data)+begidx , &outbegidx , &outnbelement , <double *>(outreal.data)+lookback , <double *>(outrealupperband1.data)+lookback , <double *>(outreallowerband1.data)+lookback , <double *>(outrealupperband2.data)+lookback , <double *>(outreallowerband2.data)+lookback , <double *>(outrealupperband3.data)+lookback , <double *>(outreallowerband3.data)+lookback )
     _ta_check_success("TA_VWAP", retCode)
-    return outreal 
+    return outreal , outrealupperband1 , outreallowerband1 , outrealupperband2 , outreallowerband2 , outrealupperband3 , outreallowerband3 
 
 @wraparound(False)  # turn off relative indexing from end of lists
 @boundscheck(False) # turn off bounds-checking for entire function

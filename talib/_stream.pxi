@@ -5548,6 +5548,12 @@ def stream_VWAP( np.ndarray high not None , np.ndarray low not None , np.ndarray
         prices: ['timeStamp']
     Outputs:
         real
+        upperband1
+        lowerband1
+        upperband2
+        lowerband2
+        upperband3
+        lowerband3
     """
     cdef:
         np.npy_intp length
@@ -5560,6 +5566,12 @@ def stream_VWAP( np.ndarray high not None , np.ndarray low not None , np.ndarray
         int outbegidx
         int outnbelement
         double outreal
+        double outrealupperband1
+        double outreallowerband1
+        double outrealupperband2
+        double outreallowerband2
+        double outrealupperband3
+        double outreallowerband3
     high = check_array(high)
     high_data = <double*>high.data
     low = check_array(low)
@@ -5572,9 +5584,15 @@ def stream_VWAP( np.ndarray high not None , np.ndarray low not None , np.ndarray
     timestamp_data = <int*>timestamp.data
     length = check_length5(high, low, close, volume, timestamp)
     outreal = NaN
-    retCode = lib.TA_VWAP( <int>(length) - 1 , <int>(length) - 1 , high_data , low_data , close_data , volume_data , timestamp_data , &outbegidx , &outnbelement , &outreal )
+    outrealupperband1 = NaN
+    outreallowerband1 = NaN
+    outrealupperband2 = NaN
+    outreallowerband2 = NaN
+    outrealupperband3 = NaN
+    outreallowerband3 = NaN
+    retCode = lib.TA_VWAP( <int>(length) - 1 , <int>(length) - 1 , high_data , low_data , close_data , volume_data , timestamp_data , &outbegidx , &outnbelement , &outreal , &outrealupperband1 , &outreallowerband1 , &outrealupperband2 , &outreallowerband2 , &outrealupperband3 , &outreallowerband3 )
     _ta_check_success("TA_VWAP", retCode)
-    return outreal 
+    return outreal , outrealupperband1 , outreallowerband1 , outrealupperband2 , outreallowerband2 , outrealupperband3 , outreallowerband3 
 
 @wraparound(False)  # turn off relative indexing from end of lists
 @boundscheck(False) # turn off bounds-checking for entire function
