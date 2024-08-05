@@ -625,8 +625,6 @@ cdef extern from "ta-lib/ta_func.h":
 
     TA_RetCode TA_VWAP(int    startIdx,
                        int    endIdx,
-                       const double inHigh[],
-                       const double inLow[],
                        const double inClose[],
                        const double inVolume[],
                        const int    inTimestamp[],

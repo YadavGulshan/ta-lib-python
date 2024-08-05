@@ -350,7 +350,8 @@ def test_VWAP():
     import pandas as pd
 
     def calculate_vwap_with_std(group):
-        typical_price = (group['high'] + group['low'] + group['close']) / 3
+        # typical_price = (group['high'] + group['low'] + group['close']) / 3
+        typical_price = group['close']
         vwap = (typical_price * group['volume']).cumsum() / group['volume'].cumsum()
         var_sum = ((typical_price - vwap) ** 2 * group['volume']).cumsum()
         vwap_std = np.sqrt(var_sum / group['volume'].cumsum())
@@ -376,7 +377,7 @@ def test_VWAP():
     result = df.groupby('date', group_keys=False).apply(calculate_vwap_with_std)
     df = df.merge(result, left_index=True, right_index=True)
 
-    res_vwap, ub1, lb1, ub2, lb2, ub3, lb3 = func.VWAP(df['high'], df['low'], df['close'], df['volume'], df['timestamp_unix'].values.astype(np.int32))
+    res_vwap, ub1, lb1, ub2, lb2, ub3, lb3 = func.VWAP(df['close'], df['volume'], df['timestamp_unix'].values.astype(np.int32))
 
     assert_array_almost_equal(res_vwap, df['vwap'])
     assert_array_almost_equal(ub1, df['vwap_ub_1'])
