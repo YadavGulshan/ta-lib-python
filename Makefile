@@ -7,11 +7,18 @@ build:
 install:
 	python3 -m pip install .
 
+debug: cython install generate
+
 _func: tools/generate_func.py
-	python3 tools/generate_func.py > talib/_func.pxi
+	python3 tools/generate_func.py > talib/_func.pxi.tmp && \
+	mv talib/_func.pxi.tmp talib/_func.pxi || \
+	(rm -f talib/_func.pxi.tmp; false)
+
 
 _stream: tools/generate_stream.py
-	python3 tools/generate_stream.py > talib/_stream.pxi
+	python3 tools/generate_stream.py > talib/_stream.pxi.tmp && \
+	mv talib/_stream.pxi.tmp talib/_stream.pxi || \
+	(rm -f talib/_stream.pxi.tmp; false)
 
 generate: _func _stream
 

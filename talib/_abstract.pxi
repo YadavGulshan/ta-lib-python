@@ -1,11 +1,14 @@
 '''
 This file Copyright (c) 2013 Brian A Cappello <briancappello at gmail>
 '''
+import os
+
 import math
 import threading
+
 try:
     from collections import OrderedDict
-except ImportError: # handle python 2.6 and earlier
+except ImportError:  # handle python 2.6 and earlier
     from ordereddict import OrderedDict
 from cython.operator cimport dereference as deref
 import numpy
@@ -13,15 +16,16 @@ import sys
 
 cimport numpy as np
 cimport _ta_lib as lib
+
 # NOTE: _ta_check_success, MA_Type is defined in _common.pxi
 
-np.import_array() # Initialize the NumPy C API
+np.import_array()  # Initialize the NumPy C API
 
 # lookup for TALIB input parameters which don't define expected price series inputs
-__INPUT_PRICE_SERIES_DEFAULTS = {'price':   'close',
-                                 'price0':  'high',
-                                 'price1':  'low',
-                                 'periods': 'periods', # only used by MAVP; not a price series!
+__INPUT_PRICE_SERIES_DEFAULTS = {'price': 'close',
+                                 'price0': 'high',
+                                 'price1': 'low',
+                                 'periods': 'periods',  # only used by MAVP; not a price series!
                                  }
 
 __INPUT_ARRAYS_TYPES = [dict]
@@ -30,6 +34,7 @@ __ARRAY_TYPES = [np.ndarray]
 # allow use of pandas.DataFrame for input arrays
 try:
     import pandas
+
     __INPUT_ARRAYS_TYPES.append(pandas.DataFrame)
     __ARRAY_TYPES.append(pandas.Series)
     __PANDAS_DATAFRAME = pandas.DataFrame
@@ -41,6 +46,7 @@ except ImportError:
 # allow use of polars.DataFrame for input arrays
 try:
     import polars
+
     __INPUT_ARRAYS_TYPES.append(polars.DataFrame)
     __ARRAY_TYPES.append(polars.Series)
     __POLARS_DATAFRAME = polars.DataFrame
@@ -51,7 +57,6 @@ except ImportError:
 
 __INPUT_ARRAYS_TYPES = tuple(__INPUT_ARRAYS_TYPES)
 __ARRAY_TYPES = tuple(__ARRAY_TYPES)
-
 
 if sys.version >= '3':
 
@@ -68,6 +73,16 @@ else:
 
     def bytes2str(b):
         return b
+
+ENABLE_LOG = False
+if os.path.exists('talib.log'):
+    os.remove('talib.log')
+def log(message: str):
+    if not ENABLE_LOG:
+        return
+    with open('talib.log', 'a') as f:
+        f.write(message + '\n')
+
 
 class Function(object):
     """
@@ -126,12 +141,19 @@ class Function(object):
 
             # function info
             local.info = _ta_getFuncInfo(self.__name)
+            name = self.__namestr
+
+            log('[__local]')
+            log('[%s] local.info: %s' % (name, local.info))
 
             # inputs (price series names)
             for i in xrange(local.info.pop('num_inputs')):
                 info = _ta_getInputParameterInfo(self.__name, i)
+                log('   %d - input info: %s' % (i, info))
                 input_name = info['name']
                 if info['price_series'] is None:
+                    log('       price_series is None')
+                    log('       input_name: %s' % input_name)
                     info['price_series'] = __INPUT_PRICE_SERIES_DEFAULTS[input_name]
                 local.input_names[input_name] = info
             local.info['input_names'] = self.input_names
@@ -151,6 +173,9 @@ class Function(object):
                 local.info['output_flags'][output_name] = info['flags']
                 local.outputs[output_name] = None
             local.info['output_names'] = self.output_names
+
+        log('   local.info: %s' % local.info)
+        log('END [__local]\n\n\n')
         return local
 
     @property
@@ -203,7 +228,7 @@ class Function(object):
         """
         local = self.__local
         if __POLARS_DATAFRAME is not None \
-            and isinstance(local.input_arrays, __POLARS_DATAFRAME):
+                and isinstance(local.input_arrays, __POLARS_DATAFRAME):
             return local.input_arrays.clone()
         else:
             return local.input_arrays.copy()
@@ -238,7 +263,7 @@ class Function(object):
             missing_keys = []
             for key in self.__input_price_series_names():
                 if __POLARS_DATAFRAME is not None \
-                    and isinstance(input_arrays, __POLARS_DATAFRAME):
+                        and isinstance(input_arrays, __POLARS_DATAFRAME):
                     missing = key not in input_arrays.columns
                 else:
                     missing = key not in input_arrays
@@ -249,10 +274,10 @@ class Function(object):
                 local.outputs_valid = False
                 return True
             else:
-                raise Exception('input_arrays parameter missing required data '\
+                raise Exception('input_arrays parameter missing required data ' \
                                 'key%s: %s' % ('s' if len(missing_keys) > 1 \
-                                                    else '',
-                                                ', '.join(missing_keys)))
+                                                   else '',
+                                               ', '.join(missing_keys)))
         return False
 
     input_arrays = property(get_input_arrays, set_input_arrays)
@@ -463,10 +488,10 @@ class Function(object):
         input_price_series_names = []
         for input_name in local.input_names:
             price_series = local.input_names[input_name]['price_series']
-            if isinstance(price_series, list): # TALIB-supplied input names
+            if isinstance(price_series, list):  # TALIB-supplied input names
                 for name in price_series:
                     input_price_series_names.append(name)
-            else: # name came from __INPUT_PRICE_SERIES_DEFAULTS
+            else:  # name came from __INPUT_PRICE_SERIES_DEFAULTS
                 input_price_series_names.append(price_series)
         return input_price_series_names
 
@@ -509,7 +534,7 @@ class Function(object):
             type_ = float
 
         if isinstance(value, type_):
-           return True
+            return True
         elif value is not None:
             raise TypeError(
                 'Invalid parameter value for %s (expected %s, got %s)' % (
@@ -533,7 +558,7 @@ class Function(object):
         return unicode(self.__str__())
 
     def __str__(self):
-        return _get_defaults_and_docs(self.info)[1] # docstring includes defaults
+        return _get_defaults_and_docs(self.info)[1]  # docstring includes defaults
 
 
 ######################  INTERNAL python-level functions  #######################
@@ -576,23 +601,37 @@ def __get_flags(int flag, dict flags_lookup_dict):
     This function returns the flags from flag found in the provided
     flags_lookup_dict.
     """
+    log('[__get_flags] flag: %d, flags_lookup_dict: %s' % (flag, flags_lookup_dict))
     value_range = flags_lookup_dict.keys()
+    log('   value_range: %s' % value_range)
     if not isinstance(value_range, list):
+        log('       value_range is not a list')
         value_range = list(value_range)
     min_int = int(math.log(min(value_range), 2))
     max_int = int(math.log(max(value_range), 2))
 
+    log('   min_int: %d' % min_int)
+    log('   max_int: %d' % max_int)
+
     # if the flag we got is out-of-range, it just means no extra info provided
-    if flag < 1 or flag > 2**max_int:
+    log('2 ** max_int: %s' % (2 ** max_int))
+
+    if flag < 1 or flag > 2 ** max_int:
+        log('       flag is out-of-range')
+        log('       flag: %d' % flag)
+        log('END [__get_flags]')
         return None
+    log('   flag: %d' % flag)
 
     # In this loop, i is essentially the bit-position, which represents an
     # input from flags_lookup_dict. We loop through as many flags_lookup_dict
     # bit-positions as we need to check, bitwise-ANDing each with flag for a hit.
     ret = []
-    for i in xrange(min_int, max_int+1):
-        if 2**i & flag:
-            ret.append(flags_lookup_dict[2**i])
+    for i in xrange(min_int, max_int + 1):
+        if 2 ** i & flag:
+            ret.append(flags_lookup_dict[2 ** i])
+    log('       ret: %s' % ret)
+    log('END [__get_flags]')
     return ret
 
 TA_FUNC_FLAGS = {
@@ -610,7 +649,8 @@ TA_INPUT_FLAGS = {
     8: 'close',
     16: 'volume',
     32: 'openInterest',
-    64: 'timeStamp'
+    64: 'timeStamp',
+    128: 'TA_INPUT_FLAG_RANGE_LIMIT', # Adding this, so that when using timestamp input, it will be recognized as a valid input. Sum of all flags is 127
 }
 
 TA_OUTPUT_FLAGS = {
@@ -653,21 +693,30 @@ def _ta_getInputParameterInfo(char *function_name, int idx):
     Returns the function's input info dict for the given index. It has two
     keys: name and flags.
     """
+    log('[_ta_getInputParameterInfo]')
+
     cdef const lib.TA_InputParameterInfo *info
+    log('   function_name: %s' % function_name)
+    log('   idx: %d' % idx)
     retCode = lib.TA_GetInputParameterInfo(__ta_getFuncHandle(function_name), idx, &info)
     _ta_check_success('TA_GetInputParameterInfo', retCode)
 
     name = bytes2str(info.paramName)
+    log('   paramName: %s' % name)
     name = name[len('in'):].lower()
     if 'real' in name:
         name = name.replace('real', 'price')
     elif 'price' in name:
         name = 'prices'
 
-    return {
+    res =  {
         'name': name,
         'price_series': __get_flags(info.flags, TA_INPUT_FLAGS)
     }
+
+    log('   %d - input info: %s' % (idx, res))
+    log('END [_ta_getInputParameterInfo]')
+    return res
 
 def _ta_getOptInputParameterInfo(char *function_name, int idx):
     """
@@ -756,7 +805,6 @@ def _get_defaults_and_docs(func_info):
     documentation = '\n'.join(docs)
     return defaults, documentation
 
-
 ###############    PRIVATE C-level-only functions    ###########################
 # These map 1-1 with native C TALIB abstract interface calls. Their names are the
 # same except for having the leading 4 characters lowercased.
@@ -765,7 +813,7 @@ def _get_defaults_and_docs(func_info):
 # - Getting TALIB handle and paramholder pointers
 # - Setting TALIB paramholder optInput values and calling the lookback function
 
-cdef const lib.TA_FuncHandle*  __ta_getFuncHandle(char *function_name):
+cdef const lib.TA_FuncHandle *  __ta_getFuncHandle(char *function_name):
     """
     Returns a pointer to a function handle for the given function name
     """
@@ -773,7 +821,7 @@ cdef const lib.TA_FuncHandle*  __ta_getFuncHandle(char *function_name):
     _ta_check_success('TA_GetFuncHandle', lib.TA_GetFuncHandle(function_name, &handle))
     return handle
 
-cdef lib.TA_ParamHolder* __ta_paramHolderAlloc(char *function_name):
+cdef lib.TA_ParamHolder * __ta_paramHolderAlloc(char *function_name):
     """
     Returns a pointer to a parameter holder for the given function name
     """

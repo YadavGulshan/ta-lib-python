@@ -5635,7 +5635,7 @@ def VWAP( np.ndarray close not None , np.ndarray volume not None , np.ndarray ti
     Volume Weighted Average Price (Volume Indicators)
 
     Inputs:
-        prices: ['timeStamp']
+        prices: ['close', 'volume', 'timeStamp']
     Outputs:
         real
         upperband1
