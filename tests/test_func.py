@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Tuple
 
 import numpy as np
@@ -346,19 +347,28 @@ def test_PIVOT_POINTS():
 def test_VWAP():
     import talib as func
     import numpy as np
+    import pandas as pd
 
-    h = np.array([102.25, 104.00, 105.50, 104.25, 106.75, 105.00, 107.75, 108.50, 110.00, 111.25])
-    low = np.array([99.25, 100.75, 102.00, 101.50, 103.25, 102.00, 104.50, 105.25, 106.75, 107.50])
-    c = np.array([101.75, 103.50, 102.50, 104.25, 103.75, 105.50, 106.25, 107.75, 109.00, 110.50])
-    volume = np.array([100., 200, 300, 400, 500, 600, 700, 800, 900, 1000])
-    timestamp = np.array([
-        1617235200, 1617321600, 1617408000, 1617494400, 1617580800,
-        1617667200, 1617753600, 1617840000, 1617926400, 1618012800
-    ], dtype=np.int32)
+    def calculate_vwap(group):
+        typical_price = (group['high'] + group['low'] + group['close']) / 3
+        return (typical_price * group['volume']).cumsum() / group['volume'].cumsum()
 
-    vwap = func.VWAP(h, low, c, volume, timestamp)
-    print(vwap)
+    data = {
+        "timestamp": pd.date_range(start="2024-04-01 08:30:00", periods=20, freq="5h"),
+        "open": np.random.uniform(100, 110, 20),
+        "high": np.random.uniform(110, 120, 20),
+        "low": np.random.uniform(90, 100, 20),
+        "close": np.random.uniform(100, 110, 20),
+        "volume": np.random.randint(100, 1000, 20, dtype="int32")
+    }
+    df = pd.DataFrame(data)
+    df['timestamp_unix'] = df['timestamp'].astype(int) // 10 ** 9
+    df['date'] = df['timestamp'].dt.date
+    df['vwap'] = df.groupby('date', group_keys=False).apply(calculate_vwap)
 
+    vwap = func.VWAP(df['high'], df['low'], df['close'], df['volume'], df['timestamp_unix'].values.astype(np.int32))
+
+    assert_array_almost_equal(vwap, df['vwap'])
 
 
 if __name__ == "__main__":
