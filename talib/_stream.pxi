@@ -4508,6 +4508,25 @@ def stream_NATR( np.ndarray high not None , np.ndarray low not None , np.ndarray
 
 @wraparound(False)  # turn off relative indexing from end of lists
 @boundscheck(False) # turn off bounds-checking for entire function
+def stream_ND( np.ndarray timestamp not None ):
+    """ ND(timestamp)"""
+    cdef:
+        np.npy_intp length
+        TA_RetCode retCode
+        int* timestamp_data
+        int outbegidx
+        int outnbelement
+        double outreal
+    timestamp = check_array(timestamp)
+    timestamp_data = <int*>timestamp.data
+    length = timestamp.shape[0]
+    outreal = NaN
+    retCode = lib.TA_ND( <int>(length) - 1 , <int>(length) - 1 , timestamp_data , &outbegidx , &outnbelement , &outreal )
+    _ta_check_success("TA_ND", retCode)
+    return outreal 
+
+@wraparound(False)  # turn off relative indexing from end of lists
+@boundscheck(False) # turn off bounds-checking for entire function
 def stream_OBV( np.ndarray real not None , np.ndarray volume not None ):
     """ OBV(real, volume)
 

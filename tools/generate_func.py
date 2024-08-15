@@ -211,7 +211,7 @@ cdef np.npy_int check_begidx5(np.npy_intp length, double* a1, double* a2, double
 
 # Integer version of check_begidx functions, I'm assuming only the last one will be of type int.
 # Don't know which type of indicator will only be using a timestamp. But just in case.        
-cdef np.npy_int check_begidx1_int(np.npy_intp length, double* a1):
+cdef np.npy_int check_begidx1_int(np.npy_intp length, int* a1):
     cdef:
         double val
     for i from 0 <= i < length:

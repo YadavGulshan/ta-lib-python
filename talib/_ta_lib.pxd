@@ -652,6 +652,15 @@ cdef extern from "ta-lib/ta_func.h":
                                 double        outFwdFillRedBarNBarsAgo[])
     int TA_FWDFILLREDBAR_Lookback()
 
+    TA_RetCode TA_ND(int    startIdx,
+                     int    endIdx,
+                     const int    inTimestamp[],
+                     int *outBegIdx,
+                     int *outNBElement,
+                     double        outReal[])
+
+    int TA_ND_Lookback()
+
 
 
 
