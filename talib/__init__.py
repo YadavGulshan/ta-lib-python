@@ -218,7 +218,8 @@ __function_groups__ = {
         'WMA',
         'AVGXBAR',
         'PIVOTPOINTS',
-        'XBAR'
+        'XBAR',
+        'ND',
         ],
     'Pattern Recognition': [
         'CDL2CROWS',
