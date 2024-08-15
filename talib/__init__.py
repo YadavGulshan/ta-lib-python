@@ -282,6 +282,7 @@ __function_groups__ = {
         'CDLUNIQUE3RIVER',
         'CDLUPSIDEGAP2CROWS',
         'CDLXSIDEGAP3METHODS',
+        'FWDFILLREDBAR',
         ],
     'Price Transform': [
         'AVGPRICE',

@@ -348,6 +348,7 @@ def test_VWAP():
     import talib as func
     import numpy as np
     import pandas as pd
+    np.random.seed(42)
 
     def calculate_vwap_with_std(group):
         # typical_price = (group['high'] + group['low'] + group['close']) / 3
@@ -377,7 +378,8 @@ def test_VWAP():
     result = df.groupby('date', group_keys=False).apply(calculate_vwap_with_std)
     df = df.merge(result, left_index=True, right_index=True)
 
-    res_vwap, ub1, lb1, ub2, lb2, ub3, lb3 = func.VWAP(df['close'], df['volume'], df['timestamp_unix'].values.astype(np.int32))
+    res_vwap, ub1, lb1, ub2, lb2, ub3, lb3 = func.VWAP(df['close'], df['volume'],
+                                                       df['timestamp_unix'].values.astype(np.int32))
 
     assert_array_almost_equal(res_vwap, df['vwap'])
     assert_array_almost_equal(ub1, df['vwap_ub_1'])
@@ -388,7 +390,79 @@ def test_VWAP():
     assert_array_almost_equal(lb3, df['vwap_lb_3'])
 
 
+def test_fwd_fill_red_bar_indicator():
+    import pandas as pd
+    import talib as func
+    np.random.seed(42)
+    size = 200
+
+    data = {
+        "timestamp": pd.date_range(start="2024-04-01 08:30:00", periods=size, freq="5h"),
+        "open": np.random.uniform(100, 110, size),
+        "high": np.random.uniform(110, 120, size),
+        "low": np.random.uniform(90, 100, size),
+        "close": np.random.uniform(100, 110, size),
+        "volume": np.random.randint(100, 1000, size, dtype="int32")
+    }
+    df = pd.DataFrame(data)
+    df['timestamp_unix'] = df['timestamp'].astype(int) // 10 ** 9
+    df['date'] = df['timestamp'].dt.date
+
+    def calculate_fwd_fill_red_bar_indicator(data):
+        ffill_red_bar_max_open = None
+        ffill_red_bar_cum_low = None
+        ffill_red_bar_n_bars_ago = 0
+        prev_date = None
+        results = []
+
+        for i, row in data.iterrows():
+            if prev_date is None or prev_date != row['date']:
+                prev_date = row['date']
+
+                ffill_red_bar_max_open = None
+                ffill_red_bar_cum_low = None
+                ffill_red_bar_n_bars_ago = 0
+
+            is_red_bar = row['close'] < row['open']
+            if is_red_bar:
+                vals_unchanged = True
+                if ffill_red_bar_max_open is None or row['open'] > ffill_red_bar_max_open:
+                    ffill_red_bar_max_open = row['open']
+                    vals_unchanged = False
+
+                if ffill_red_bar_cum_low is None or row['low'] < ffill_red_bar_cum_low:
+                    ffill_red_bar_cum_low = row['low']
+                    vals_unchanged = False
+
+                if vals_unchanged:
+                    ffill_red_bar_n_bars_ago += 1
+                else:
+                    ffill_red_bar_n_bars_ago = 0
+            else:
+                if ffill_red_bar_cum_low is None and ffill_red_bar_max_open is None:
+                    ffill_red_bar_n_bars_ago = 0
+                else:
+                    ffill_red_bar_n_bars_ago += 1
+
+            results.append({
+                'FFillRedBarMaxOpen': ffill_red_bar_max_open,
+                'FFillRedBarCumLow': ffill_red_bar_cum_low,
+                'FFillRedBarNBarsAgo': ffill_red_bar_n_bars_ago
+            })
+
+        return pd.DataFrame(results)
+
+    # group by date
+    result = calculate_fwd_fill_red_bar_indicator(df)
+    df = df.merge(result, left_index=True, right_index=True)
+    TA_FFillRedBarMaxOpen, TA_FFillRedBarCumLow, TA_FFillRedBarNBarsAgo = func.FWDFILLREDBAR(
+        df['open'], df["low"], df['close'], df['timestamp_unix'].values.astype(np.int32)
+    )
+
+    assert_array_almost_equal(TA_FFillRedBarMaxOpen, df['FFillRedBarMaxOpen'])
+    assert_array_almost_equal(TA_FFillRedBarCumLow, df['FFillRedBarCumLow'])
+    assert_array_almost_equal(TA_FFillRedBarNBarsAgo, df['FFillRedBarNBarsAgo'])
 
 
 if __name__ == "__main__":
-    test_VWAP()
+    test_fwd_fill_red_bar_indicator()

@@ -3392,6 +3392,44 @@ def FLOOR( np.ndarray real not None ):
 
 @wraparound(False)  # turn off relative indexing from end of lists
 @boundscheck(False) # turn off bounds-checking for entire function
+def FWDFILLREDBAR( np.ndarray open not None , np.ndarray low not None , np.ndarray close not None , np.ndarray timestamp not None ):
+    """ FWDFILLREDBAR(open, low, close, timestamp)
+
+    Forward Fill Red Bar (Pattern Recognition)
+
+    Inputs:
+        prices: ['open', 'low', 'close', 'timeStamp']
+    Outputs:
+        fwdfillredbarmaxopen
+        fwdfillredbarcumlow
+        fwdfillredbarnbarsago
+    """
+    cdef:
+        np.npy_intp length
+        int begidx, endidx, lookback
+        TA_RetCode retCode
+        int outbegidx
+        int outnbelement
+        np.ndarray outfwdfillredbarmaxopen
+        np.ndarray outfwdfillredbarcumlow
+        np.ndarray outfwdfillredbarnbarsago
+    open = check_array(open)
+    low = check_array(low)
+    close = check_array(close)
+    timestamp = check_array(timestamp)
+    length = check_length4(open, low, close, timestamp)
+    begidx = check_begidx4_int(length, <double*>(open.data), <double*>(low.data), <double*>(close.data), <int*>(timestamp.data))
+    endidx = <int>length - begidx - 1
+    lookback = begidx + lib.TA_FWDFILLREDBAR_Lookback( )
+    outfwdfillredbarmaxopen = make_double_array(length, lookback)
+    outfwdfillredbarcumlow = make_double_array(length, lookback)
+    outfwdfillredbarnbarsago = make_double_array(length, lookback)
+    retCode = lib.TA_FWDFILLREDBAR( 0 , endidx , <double *>(open.data)+begidx , <double *>(low.data)+begidx , <double *>(close.data)+begidx , <int *>(timestamp.data)+begidx , &outbegidx , &outnbelement , <double *>(outfwdfillredbarmaxopen.data)+lookback , <double *>(outfwdfillredbarcumlow.data)+lookback , <double *>(outfwdfillredbarnbarsago.data)+lookback )
+    _ta_check_success("TA_FWDFILLREDBAR", retCode)
+    return outfwdfillredbarmaxopen , outfwdfillredbarcumlow , outfwdfillredbarnbarsago 
+
+@wraparound(False)  # turn off relative indexing from end of lists
+@boundscheck(False) # turn off bounds-checking for entire function
 def HT_DCPERIOD( np.ndarray real not None ):
     """ HT_DCPERIOD(real)
 
@@ -5806,4 +5844,4 @@ def XBAR( np.ndarray high not None , np.ndarray low not None , int timeperiod=-2
     _ta_check_success("TA_XBAR", retCode)
     return outxhigh , outxlow 
 
-__TA_FUNCTION_NAMES__ = ["ACCBANDS","ACOS","ABR","AD","ADD","ADOSC","ADX","ADXR","APO","AROON","AROONOSC","ASIN","ATAN","ATR","ADR","AVGPRICE","AVGDEV","AVGXBAR","BBANDS","BETA","BOP","CCI","CDL2CROWS","CDL3BLACKCROWS","CDL3INSIDE","CDL3LINESTRIKE","CDL3OUTSIDE","CDL3STARSINSOUTH","CDL3WHITESOLDIERS","CDLABANDONEDBABY","CDLADVANCEBLOCK","CDLBELTHOLD","CDLBREAKAWAY","CDLCLOSINGMARUBOZU","CDLCONCEALBABYSWALL","CDLCOUNTERATTACK","CDLDARKCLOUDCOVER","CDLDOJI","CDLDOJISTAR","CDLDRAGONFLYDOJI","CDLENGULFING","CDLEVENINGDOJISTAR","CDLEVENINGSTAR","CDLGAPSIDESIDEWHITE","CDLGRAVESTONEDOJI","CDLHAMMER","CDLHANGINGMAN","CDLHARAMI","CDLHARAMICROSS","CDLHIGHWAVE","CDLHIKKAKE","CDLHIKKAKEMOD","CDLHOMINGPIGEON","CDLIDENTICAL3CROWS","CDLINNECK","CDLINVERTEDHAMMER","CDLKICKING","CDLKICKINGBYLENGTH","CDLLADDERBOTTOM","CDLLONGLEGGEDDOJI","CDLLONGLINE","CDLMARUBOZU","CDLMATCHINGLOW","CDLMATHOLD","CDLMAXBAR","CDLMORNINGDOJISTAR","CDLMORNINGSTAR","CDLONNECK","CDLPIERCING","CDLRICKSHAWMAN","CDLRISEFALL3METHODS","CDLSEPARATINGLINES","CDLSHOOTINGSTAR","CDLSHORTLINE","CDLSPINNINGTOP","CDLSTALLEDPATTERN","CDLSTICKSANDWICH","CDLTAKURI","CDLTASUKIGAP","CDLTHRUSTING","CDLTRISTAR","CDLUNIQUE3RIVER","CDLUPSIDEGAP2CROWS","CDLWICK","CDLWICKPERCENT","CDLXSIDEGAP3METHODS","CEIL","CMO","CORREL","COS","COSH","DEMA","DIV","DX","EMA","EXP","FLOOR","HT_DCPERIOD","HT_DCPHASE","HT_PHASOR","HT_SINE","HT_TRENDLINE","HT_TRENDMODE","IMI","KAMA","LINEARREG","LINEARREG_ANGLE","LINEARREG_INTERCEPT","LINEARREG_SLOPE","LN","LOG10","MA","MACD","MACDEXT","MACDFIX","MAMA","MAVP","MAX","MAXINDEX","MEDPRICE","MFI","MIDPOINT","MIDPRICE","MIN","MININDEX","MINMAX","MINMAXINDEX","MINUS_DI","MINUS_DM","MOM","MULT","NATR","OBV","PLUS_DI","PLUS_DM","PPO","PVT","PIVOTPOINTS","ROC","ROCP","ROCR","ROCR100","RSI","SAR","SAREXT","SIN","SINH","SMA","SQRT","STDDEV","STOCH","STOCHF","STOCHRSI","SUB","SUM","T3","TAN","TANH","TEMA","TRANGE","TRIMA","TRIX","TSF","TYPPRICE","ULTOSC","VAR","VWAP","WCLPRICE","WILLR","WMA","XBAR"]
+__TA_FUNCTION_NAMES__ = ["ACCBANDS","ACOS","ABR","AD","ADD","ADOSC","ADX","ADXR","APO","AROON","AROONOSC","ASIN","ATAN","ATR","ADR","AVGPRICE","AVGDEV","AVGXBAR","BBANDS","BETA","BOP","CCI","CDL2CROWS","CDL3BLACKCROWS","CDL3INSIDE","CDL3LINESTRIKE","CDL3OUTSIDE","CDL3STARSINSOUTH","CDL3WHITESOLDIERS","CDLABANDONEDBABY","CDLADVANCEBLOCK","CDLBELTHOLD","CDLBREAKAWAY","CDLCLOSINGMARUBOZU","CDLCONCEALBABYSWALL","CDLCOUNTERATTACK","CDLDARKCLOUDCOVER","CDLDOJI","CDLDOJISTAR","CDLDRAGONFLYDOJI","CDLENGULFING","CDLEVENINGDOJISTAR","CDLEVENINGSTAR","CDLGAPSIDESIDEWHITE","CDLGRAVESTONEDOJI","CDLHAMMER","CDLHANGINGMAN","CDLHARAMI","CDLHARAMICROSS","CDLHIGHWAVE","CDLHIKKAKE","CDLHIKKAKEMOD","CDLHOMINGPIGEON","CDLIDENTICAL3CROWS","CDLINNECK","CDLINVERTEDHAMMER","CDLKICKING","CDLKICKINGBYLENGTH","CDLLADDERBOTTOM","CDLLONGLEGGEDDOJI","CDLLONGLINE","CDLMARUBOZU","CDLMATCHINGLOW","CDLMATHOLD","CDLMAXBAR","CDLMORNINGDOJISTAR","CDLMORNINGSTAR","CDLONNECK","CDLPIERCING","CDLRICKSHAWMAN","CDLRISEFALL3METHODS","CDLSEPARATINGLINES","CDLSHOOTINGSTAR","CDLSHORTLINE","CDLSPINNINGTOP","CDLSTALLEDPATTERN","CDLSTICKSANDWICH","CDLTAKURI","CDLTASUKIGAP","CDLTHRUSTING","CDLTRISTAR","CDLUNIQUE3RIVER","CDLUPSIDEGAP2CROWS","CDLWICK","CDLWICKPERCENT","CDLXSIDEGAP3METHODS","CEIL","CMO","CORREL","COS","COSH","DEMA","DIV","DX","EMA","EXP","FLOOR","FWDFILLREDBAR","HT_DCPERIOD","HT_DCPHASE","HT_PHASOR","HT_SINE","HT_TRENDLINE","HT_TRENDMODE","IMI","KAMA","LINEARREG","LINEARREG_ANGLE","LINEARREG_INTERCEPT","LINEARREG_SLOPE","LN","LOG10","MA","MACD","MACDEXT","MACDFIX","MAMA","MAVP","MAX","MAXINDEX","MEDPRICE","MFI","MIDPOINT","MIDPRICE","MIN","MININDEX","MINMAX","MINMAXINDEX","MINUS_DI","MINUS_DM","MOM","MULT","NATR","OBV","PLUS_DI","PLUS_DM","PPO","PVT","PIVOTPOINTS","ROC","ROCP","ROCR","ROCR100","RSI","SAR","SAREXT","SIN","SINH","SMA","SQRT","STDDEV","STOCH","STOCHF","STOCHRSI","SUB","SUM","T3","TAN","TANH","TEMA","TRANGE","TRIMA","TRIX","TSF","TYPPRICE","ULTOSC","VAR","VWAP","WCLPRICE","WILLR","WMA","XBAR"]
