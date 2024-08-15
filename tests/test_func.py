@@ -408,9 +408,15 @@ def test_fwd_fill_red_bar_indicator():
     df['timestamp_unix'] = df['timestamp'].astype(int) // 10 ** 9
     df['date'] = df['timestamp'].dt.date
 
-    def calculate_fwd_fill_red_bar_indicator(data):
+    def calculate_fwd_fill_red_bar_indicator(open, low, close, timestamp_unix):
+        data = pd.DataFrame({
+            'open': open,
+            'low': low,
+            'close': close,
+            'date': pd.to_datetime(timestamp_unix, unit='s').dt.date
+        })
         ffill_red_bar_max_open = None
-        ffill_red_bar_cum_low = None
+        ffill_cum_low = None
         ffill_red_bar_n_bars_ago = 0
         prev_date = None
         results = []
@@ -420,47 +426,69 @@ def test_fwd_fill_red_bar_indicator():
                 prev_date = row['date']
 
                 ffill_red_bar_max_open = None
-                ffill_red_bar_cum_low = None
+                ffill_cum_low = None
                 ffill_red_bar_n_bars_ago = 0
 
             is_red_bar = row['close'] < row['open']
             if is_red_bar:
-                vals_unchanged = True
                 if ffill_red_bar_max_open is None or row['open'] > ffill_red_bar_max_open:
                     ffill_red_bar_max_open = row['open']
-                    vals_unchanged = False
-
-                if ffill_red_bar_cum_low is None or row['low'] < ffill_red_bar_cum_low:
-                    ffill_red_bar_cum_low = row['low']
-                    vals_unchanged = False
-
-                if vals_unchanged:
-                    ffill_red_bar_n_bars_ago += 1
-                else:
                     ffill_red_bar_n_bars_ago = 0
-            else:
-                if ffill_red_bar_cum_low is None and ffill_red_bar_max_open is None:
-                    ffill_red_bar_n_bars_ago = 0
-                else:
-                    ffill_red_bar_n_bars_ago += 1
+            if not is_red_bar and ffill_red_bar_max_open is not None:
+                ffill_red_bar_n_bars_ago += 1
+
+            if ffill_cum_low is None or row['low'] < ffill_cum_low:
+                ffill_cum_low = row['low']
 
             results.append({
                 'FFillRedBarMaxOpen': ffill_red_bar_max_open,
-                'FFillRedBarCumLow': ffill_red_bar_cum_low,
+                'FFillCumLow': ffill_cum_low,
                 'FFillRedBarNBarsAgo': ffill_red_bar_n_bars_ago
             })
 
         return pd.DataFrame(results)
 
     # group by date
-    result = calculate_fwd_fill_red_bar_indicator(df)
+    result = calculate_fwd_fill_red_bar_indicator(df['open'], df['low'], df['close'], df['timestamp_unix'])
     df = df.merge(result, left_index=True, right_index=True)
     TA_FFillRedBarMaxOpen, TA_FFillRedBarCumLow, TA_FFillRedBarNBarsAgo = func.FWDFILLREDBAR(
         df['open'], df["low"], df['close'], df['timestamp_unix'].values.astype(np.int32)
     )
 
     assert_array_almost_equal(TA_FFillRedBarMaxOpen, df['FFillRedBarMaxOpen'])
-    assert_array_almost_equal(TA_FFillRedBarCumLow, df['FFillRedBarCumLow'])
+    assert_array_almost_equal(TA_FFillRedBarCumLow, df['FFillCumLow'])
+    assert_array_almost_equal(TA_FFillRedBarNBarsAgo, df['FFillRedBarNBarsAgo'])
+
+    df = pd.read_csv('assets/ForwardFillRedBarIndicatorDebug.csv')
+    df["datetime"] = pd.to_datetime(df["datetime"])
+    df["timestamp_unix"] = df["datetime"].astype(int) // 10 ** 9
+    df["open"] = df["M_1_OPEN"]
+
+    result = calculate_fwd_fill_red_bar_indicator(df['M_1_OPEN'], df['M_1_LOW'], df['M_1_CLOSE'], df['timestamp_unix'])
+    df = df.merge(result, left_index=True, right_index=True)
+
+    TA_FFillRedBarMaxOpen, TA_FFillRedBarCumLow, TA_FFillRedBarNBarsAgo = func.FWDFILLREDBAR(
+        df['M_1_OPEN'], df["M_1_LOW"], df['M_1_CLOSE'], df['timestamp_unix'].values.astype(np.int32)
+    )
+
+    assert_array_almost_equal(TA_FFillRedBarMaxOpen, df['FFillRedBarMaxOpen'])
+    assert_array_almost_equal(TA_FFillRedBarCumLow, df['FFillCumLow'])
+    assert_array_almost_equal(TA_FFillRedBarNBarsAgo, df['FFillRedBarNBarsAgo'])
+
+    del df["FFillRedBarMaxOpen"]
+    del df["FFillCumLow"]
+    del df["FFillRedBarNBarsAgo"]
+
+    result = calculate_fwd_fill_red_bar_indicator(df['M_15_OPEN'], df['M_15_LOW'], df['M_15_CLOSE'],
+                                                  df['timestamp_unix'])
+    df = df.merge(result, left_index=True, right_index=True)
+
+    TA_FFillRedBarMaxOpen, TA_FFillRedBarCumLow, TA_FFillRedBarNBarsAgo = func.FWDFILLREDBAR(
+        df['M_15_OPEN'], df["M_15_LOW"], df['M_15_CLOSE'], df['timestamp_unix'].values.astype(np.int32)
+    )
+
+    assert_array_almost_equal(TA_FFillRedBarMaxOpen, df['FFillRedBarMaxOpen'])
+    assert_array_almost_equal(TA_FFillRedBarCumLow, df['FFillCumLow'])
     assert_array_almost_equal(TA_FFillRedBarNBarsAgo, df['FFillRedBarNBarsAgo'])
 
 
