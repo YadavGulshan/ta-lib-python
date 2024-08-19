@@ -657,7 +657,7 @@ cdef extern from "ta-lib/ta_func.h":
                      const int    inTimestamp[],
                      int *outBegIdx,
                      int *outNBElement,
-                     double        outReal[])
+                     int           outInteger[])
 
     int TA_ND_Lookback()
 

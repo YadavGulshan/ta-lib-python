@@ -4509,21 +4509,29 @@ def stream_NATR( np.ndarray high not None , np.ndarray low not None , np.ndarray
 @wraparound(False)  # turn off relative indexing from end of lists
 @boundscheck(False) # turn off bounds-checking for entire function
 def stream_ND( np.ndarray timestamp not None ):
-    """ ND(timestamp)"""
+    """ ND(timestamp)
+
+    New Day Indicator (Overlap Studies)
+
+    Inputs:
+        prices: ['timeStamp']
+    Outputs:
+        integer (values are -100, 0 or 100)
+    """
     cdef:
         np.npy_intp length
         TA_RetCode retCode
         int* timestamp_data
         int outbegidx
         int outnbelement
-        double outreal
+        int outinteger
     timestamp = check_array(timestamp)
     timestamp_data = <int*>timestamp.data
     length = timestamp.shape[0]
-    outreal = NaN
-    retCode = lib.TA_ND( <int>(length) - 1 , <int>(length) - 1 , timestamp_data , &outbegidx , &outnbelement , &outreal )
+    outinteger = 0
+    retCode = lib.TA_ND( <int>(length) - 1 , <int>(length) - 1 , timestamp_data , &outbegidx , &outnbelement , &outinteger )
     _ta_check_success("TA_ND", retCode)
-    return outreal 
+    return outinteger 
 
 @wraparound(False)  # turn off relative indexing from end of lists
 @boundscheck(False) # turn off bounds-checking for entire function

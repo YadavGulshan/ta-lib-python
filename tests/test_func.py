@@ -9,6 +9,26 @@ import talib
 from talib import func
 
 
+def get_test_data():
+    import pandas as pd
+    np.random.seed(42)
+    size = 200
+
+    data = {
+        "timestamp": pd.date_range(start="2024-04-01 08:30:00", periods=size, freq="5h"),
+        "open": np.random.uniform(100, 110, size),
+        "high": np.random.uniform(110, 120, size),
+        "low": np.random.uniform(90, 100, size),
+        "close": np.random.uniform(100, 110, size),
+        "volume": np.random.randint(100, 1000, size, dtype="int32")
+    }
+    df = pd.DataFrame(data)
+    df['timestamp_unix'] = df['timestamp'].astype(int) // 10 ** 9
+    df['date'] = df['timestamp'].dt.date
+
+    return df
+
+
 def test_talib_version():
     assert talib.__ta_version__[:5] == b'0.4.0'
 
@@ -364,17 +384,7 @@ def test_VWAP():
 
         return result
 
-    data = {
-        "timestamp": pd.date_range(start="2024-04-01 08:30:00", periods=20, freq="5h"),
-        "open": np.random.uniform(100, 110, 20),
-        "high": np.random.uniform(110, 120, 20),
-        "low": np.random.uniform(90, 100, 20),
-        "close": np.random.uniform(100, 110, 20),
-        "volume": np.random.randint(100, 1000, 20, dtype="int32")
-    }
-    df = pd.DataFrame(data)
-    df['timestamp_unix'] = df['timestamp'].astype(int) // 10 ** 9
-    df['date'] = df['timestamp'].dt.date
+    df = get_test_data()
     result = df.groupby('date', group_keys=False).apply(calculate_vwap_with_std)
     df = df.merge(result, left_index=True, right_index=True)
 
@@ -394,19 +404,8 @@ def test_fwd_fill_red_bar_indicator():
     import pandas as pd
     import talib as func
     np.random.seed(42)
-    size = 200
 
-    data = {
-        "timestamp": pd.date_range(start="2024-04-01 08:30:00", periods=size, freq="5h"),
-        "open": np.random.uniform(100, 110, size),
-        "high": np.random.uniform(110, 120, size),
-        "low": np.random.uniform(90, 100, size),
-        "close": np.random.uniform(100, 110, size),
-        "volume": np.random.randint(100, 1000, size, dtype="int32")
-    }
-    df = pd.DataFrame(data)
-    df['timestamp_unix'] = df['timestamp'].astype(int) // 10 ** 9
-    df['date'] = df['timestamp'].dt.date
+    df = get_test_data()
 
     def calculate_fwd_fill_red_bar_indicator(open, low, close, timestamp_unix):
         data = pd.DataFrame({
@@ -492,5 +491,19 @@ def test_fwd_fill_red_bar_indicator():
     assert_array_almost_equal(TA_FFillRedBarNBarsAgo, df['FFillRedBarNBarsAgo'])
 
 
+def test_new_day_indicator():
+    import talib as func
+
+    df = get_test_data()
+    date_changed = (df['date'] != df['date'].shift())
+    df['ND'] = date_changed.astype(int)
+    df.loc[0, 'ND'] = 1
+
+    TA_ND = func.ND(df['timestamp_unix'].values.astype(np.int32))
+    assert_array_equal(TA_ND, df['ND'])
+
+
 if __name__ == "__main__":
+    test_VWAP()
     test_fwd_fill_red_bar_indicator()
+    test_new_day_indicator()
