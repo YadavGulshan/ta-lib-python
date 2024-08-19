@@ -4574,7 +4574,7 @@ def ND( np.ndarray timestamp not None ):
     Inputs:
         prices: ['timeStamp']
     Outputs:
-        real
+        integer (values are -100, 0 or 100)
     """
     cdef:
         np.npy_intp length
@@ -4582,16 +4582,16 @@ def ND( np.ndarray timestamp not None ):
         TA_RetCode retCode
         int outbegidx
         int outnbelement
-        np.ndarray outreal
+        np.ndarray outinteger
     timestamp = check_array(timestamp)
     length = timestamp.shape[0]
     begidx = check_begidx1_int(length, <int*>(timestamp.data))
     endidx = <int>length - begidx - 1
     lookback = begidx + lib.TA_ND_Lookback( )
-    outreal = make_double_array(length, lookback)
-    retCode = lib.TA_ND( 0 , endidx , <int *>(timestamp.data)+begidx , &outbegidx , &outnbelement , <double *>(outreal.data)+lookback )
+    outinteger = make_int_array(length, lookback)
+    retCode = lib.TA_ND( 0 , endidx , <int *>(timestamp.data)+begidx , &outbegidx , &outnbelement , <int *>(outinteger.data)+lookback )
     _ta_check_success("TA_ND", retCode)
-    return outreal 
+    return outinteger 
 
 @wraparound(False)  # turn off relative indexing from end of lists
 @boundscheck(False) # turn off bounds-checking for entire function
