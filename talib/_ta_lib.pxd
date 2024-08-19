@@ -627,7 +627,7 @@ cdef extern from "ta-lib/ta_func.h":
                        int    endIdx,
                        const double inClose[],
                        const double inVolume[],
-                       const int    inTimestamp[],
+                       const double    inTimestamp[],
                        int *outBegIdx,
                        int *outNBElement,
                        double        outReal[],
@@ -644,7 +644,7 @@ cdef extern from "ta-lib/ta_func.h":
                                 const double inOpen[],
                                 const double inLow[],
                                 const double inClose[],
-                                const int    inTimestamp[],
+                                const double    inTimestamp[],
                                 int *outBegIdx,
                                 int *outNBElement,
                                 double        outFwdFillRedBarMaxOpen[],
@@ -654,7 +654,7 @@ cdef extern from "ta-lib/ta_func.h":
 
     TA_RetCode TA_ND(int    startIdx,
                      int    endIdx,
-                     const int    inTimestamp[],
+                     const double    inTimestamp[],
                      int *outBegIdx,
                      int *outNBElement,
                      int        outInteger[])

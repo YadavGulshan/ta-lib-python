@@ -3418,13 +3418,13 @@ def FWDFILLREDBAR( np.ndarray open not None , np.ndarray low not None , np.ndarr
     close = check_array(close)
     timestamp = check_array(timestamp)
     length = check_length4(open, low, close, timestamp)
-    begidx = check_begidx4_int(length, <double*>(open.data), <double*>(low.data), <double*>(close.data), <int*>(timestamp.data))
+    begidx = check_begidx4(length, <double*>(open.data), <double*>(low.data), <double*>(close.data), <double*>(timestamp.data))
     endidx = <int>length - begidx - 1
     lookback = begidx + lib.TA_FWDFILLREDBAR_Lookback( )
     outfwdfillredbarmaxopen = make_double_array(length, lookback)
     outfwdfillredbarcumlow = make_double_array(length, lookback)
     outfwdfillredbarnbarsago = make_double_array(length, lookback)
-    retCode = lib.TA_FWDFILLREDBAR( 0 , endidx , <double *>(open.data)+begidx , <double *>(low.data)+begidx , <double *>(close.data)+begidx , <int *>(timestamp.data)+begidx , &outbegidx , &outnbelement , <double *>(outfwdfillredbarmaxopen.data)+lookback , <double *>(outfwdfillredbarcumlow.data)+lookback , <double *>(outfwdfillredbarnbarsago.data)+lookback )
+    retCode = lib.TA_FWDFILLREDBAR( 0 , endidx , <double *>(open.data)+begidx , <double *>(low.data)+begidx , <double *>(close.data)+begidx , <double *>(timestamp.data)+begidx , &outbegidx , &outnbelement , <double *>(outfwdfillredbarmaxopen.data)+lookback , <double *>(outfwdfillredbarcumlow.data)+lookback , <double *>(outfwdfillredbarnbarsago.data)+lookback )
     _ta_check_success("TA_FWDFILLREDBAR", retCode)
     return outfwdfillredbarmaxopen , outfwdfillredbarcumlow , outfwdfillredbarnbarsago 
 
@@ -4585,11 +4585,11 @@ def ND( np.ndarray timestamp not None ):
         np.ndarray outinteger
     timestamp = check_array(timestamp)
     length = timestamp.shape[0]
-    begidx = check_begidx1_int(length, <int*>(timestamp.data))
+    begidx = check_begidx1(length, <double*>(timestamp.data))
     endidx = <int>length - begidx - 1
     lookback = begidx + lib.TA_ND_Lookback( )
     outinteger = make_int_array(length, lookback)
-    retCode = lib.TA_ND( 0 , endidx , <int *>(timestamp.data)+begidx , &outbegidx , &outnbelement , <int *>(outinteger.data)+lookback )
+    retCode = lib.TA_ND( 0 , endidx , <double *>(timestamp.data)+begidx , &outbegidx , &outnbelement , <int *>(outinteger.data)+lookback )
     _ta_check_success("TA_ND", retCode)
     return outinteger 
 
@@ -5729,7 +5729,7 @@ def VWAP( np.ndarray close not None , np.ndarray volume not None , np.ndarray ti
     volume = check_array(volume)
     timestamp = check_array(timestamp)
     length = check_length3(close, volume, timestamp)
-    begidx = check_begidx3_int(length, <double*>(close.data), <double*>(volume.data), <int*>(timestamp.data))
+    begidx = check_begidx3(length, <double*>(close.data), <double*>(volume.data), <double*>(timestamp.data))
     endidx = <int>length - begidx - 1
     lookback = begidx + lib.TA_VWAP_Lookback( )
     outreal = make_double_array(length, lookback)
@@ -5739,7 +5739,7 @@ def VWAP( np.ndarray close not None , np.ndarray volume not None , np.ndarray ti
     outreallowerband2 = make_double_array(length, lookback)
     outrealupperband3 = make_double_array(length, lookback)
     outreallowerband3 = make_double_array(length, lookback)
-    retCode = lib.TA_VWAP( 0 , endidx , <double *>(close.data)+begidx , <double *>(volume.data)+begidx , <int *>(timestamp.data)+begidx , &outbegidx , &outnbelement , <double *>(outreal.data)+lookback , <double *>(outrealupperband1.data)+lookback , <double *>(outreallowerband1.data)+lookback , <double *>(outrealupperband2.data)+lookback , <double *>(outreallowerband2.data)+lookback , <double *>(outrealupperband3.data)+lookback , <double *>(outreallowerband3.data)+lookback )
+    retCode = lib.TA_VWAP( 0 , endidx , <double *>(close.data)+begidx , <double *>(volume.data)+begidx , <double *>(timestamp.data)+begidx , &outbegidx , &outnbelement , <double *>(outreal.data)+lookback , <double *>(outrealupperband1.data)+lookback , <double *>(outreallowerband1.data)+lookback , <double *>(outrealupperband2.data)+lookback , <double *>(outreallowerband2.data)+lookback , <double *>(outrealupperband3.data)+lookback , <double *>(outreallowerband3.data)+lookback )
     _ta_check_success("TA_VWAP", retCode)
     return outreal , outrealupperband1 , outreallowerband1 , outrealupperband2 , outreallowerband2 , outrealupperband3 , outreallowerband3 
 

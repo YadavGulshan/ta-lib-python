@@ -3404,7 +3404,7 @@ def stream_FWDFILLREDBAR( np.ndarray open not None , np.ndarray low not None , n
         double* open_data
         double* low_data
         double* close_data
-        int* timestamp_data
+        double* timestamp_data
         int outbegidx
         int outnbelement
         double outfwdfillredbarmaxopen
@@ -3417,7 +3417,7 @@ def stream_FWDFILLREDBAR( np.ndarray open not None , np.ndarray low not None , n
     close = check_array(close)
     close_data = <double*>close.data
     timestamp = check_array(timestamp)
-    timestamp_data = <int*>timestamp.data
+    timestamp_data = <double*>timestamp.data
     length = check_length4(open, low, close, timestamp)
     outfwdfillredbarmaxopen = NaN
     outfwdfillredbarcumlow = NaN
@@ -4521,12 +4521,12 @@ def stream_ND( np.ndarray timestamp not None ):
     cdef:
         np.npy_intp length
         TA_RetCode retCode
-        int* timestamp_data
+        double* timestamp_data
         int outbegidx
         int outnbelement
         int outinteger
     timestamp = check_array(timestamp)
-    timestamp_data = <int*>timestamp.data
+    timestamp_data = <double*>timestamp.data
     length = timestamp.shape[0]
     outinteger = 0
     retCode = lib.TA_ND( <int>(length) - 1 , <int>(length) - 1 , timestamp_data , &outbegidx , &outnbelement , &outinteger )
@@ -5629,7 +5629,7 @@ def stream_VWAP( np.ndarray close not None , np.ndarray volume not None , np.nda
         TA_RetCode retCode
         double* close_data
         double* volume_data
-        int* timestamp_data
+        double* timestamp_data
         int outbegidx
         int outnbelement
         double outreal
@@ -5644,7 +5644,7 @@ def stream_VWAP( np.ndarray close not None , np.ndarray volume not None , np.nda
     volume = check_array(volume)
     volume_data = <double*>volume.data
     timestamp = check_array(timestamp)
-    timestamp_data = <int*>timestamp.data
+    timestamp_data = <double*>timestamp.data
     length = check_length3(close, volume, timestamp)
     outreal = NaN
     outrealupperband1 = NaN
