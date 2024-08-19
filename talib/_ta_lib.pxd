@@ -648,8 +648,7 @@ cdef extern from "ta-lib/ta_func.h":
                                 int *outBegIdx,
                                 int *outNBElement,
                                 double        outFwdFillRedBarMaxOpen[],
-                                double        outFwdFillRedBarCumLow[],
-                                double        outFwdFillRedBarNBarsAgo[])
+                                double        outFwdFillRedBarCumLow[])
     int TA_FWDFILLREDBAR_Lookback()
 
     TA_RetCode TA_ND(int    startIdx,

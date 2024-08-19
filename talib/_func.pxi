@@ -3402,7 +3402,6 @@ def FWDFILLREDBAR( np.ndarray open not None , np.ndarray low not None , np.ndarr
     Outputs:
         fwdfillredbarmaxopen
         fwdfillredbarcumlow
-        fwdfillredbarnbarsago
     """
     cdef:
         np.npy_intp length
@@ -3412,7 +3411,6 @@ def FWDFILLREDBAR( np.ndarray open not None , np.ndarray low not None , np.ndarr
         int outnbelement
         np.ndarray outfwdfillredbarmaxopen
         np.ndarray outfwdfillredbarcumlow
-        np.ndarray outfwdfillredbarnbarsago
     open = check_array(open)
     low = check_array(low)
     close = check_array(close)
@@ -3423,10 +3421,9 @@ def FWDFILLREDBAR( np.ndarray open not None , np.ndarray low not None , np.ndarr
     lookback = begidx + lib.TA_FWDFILLREDBAR_Lookback( )
     outfwdfillredbarmaxopen = make_double_array(length, lookback)
     outfwdfillredbarcumlow = make_double_array(length, lookback)
-    outfwdfillredbarnbarsago = make_double_array(length, lookback)
-    retCode = lib.TA_FWDFILLREDBAR( 0 , endidx , <double *>(open.data)+begidx , <double *>(low.data)+begidx , <double *>(close.data)+begidx , <double *>(timestamp.data)+begidx , &outbegidx , &outnbelement , <double *>(outfwdfillredbarmaxopen.data)+lookback , <double *>(outfwdfillredbarcumlow.data)+lookback , <double *>(outfwdfillredbarnbarsago.data)+lookback )
+    retCode = lib.TA_FWDFILLREDBAR( 0 , endidx , <double *>(open.data)+begidx , <double *>(low.data)+begidx , <double *>(close.data)+begidx , <double *>(timestamp.data)+begidx , &outbegidx , &outnbelement , <double *>(outfwdfillredbarmaxopen.data)+lookback , <double *>(outfwdfillredbarcumlow.data)+lookback )
     _ta_check_success("TA_FWDFILLREDBAR", retCode)
-    return outfwdfillredbarmaxopen , outfwdfillredbarcumlow , outfwdfillredbarnbarsago 
+    return outfwdfillredbarmaxopen , outfwdfillredbarcumlow 
 
 @wraparound(False)  # turn off relative indexing from end of lists
 @boundscheck(False) # turn off bounds-checking for entire function
