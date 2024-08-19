@@ -4516,7 +4516,7 @@ def stream_ND( np.ndarray timestamp not None ):
     Inputs:
         prices: ['timeStamp']
     Outputs:
-        integer (values are -100, 0 or 100)
+        real
     """
     cdef:
         np.npy_intp length
@@ -4524,14 +4524,14 @@ def stream_ND( np.ndarray timestamp not None ):
         int* timestamp_data
         int outbegidx
         int outnbelement
-        int outinteger
+        double outreal
     timestamp = check_array(timestamp)
     timestamp_data = <int*>timestamp.data
     length = timestamp.shape[0]
-    outinteger = 0
-    retCode = lib.TA_ND( <int>(length) - 1 , <int>(length) - 1 , timestamp_data , &outbegidx , &outnbelement , &outinteger )
+    outreal = NaN
+    retCode = lib.TA_ND( <int>(length) - 1 , <int>(length) - 1 , timestamp_data , &outbegidx , &outnbelement , &outreal )
     _ta_check_success("TA_ND", retCode)
-    return outinteger 
+    return outreal 
 
 @wraparound(False)  # turn off relative indexing from end of lists
 @boundscheck(False) # turn off bounds-checking for entire function
