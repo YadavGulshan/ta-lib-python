@@ -2273,15 +2273,16 @@ def stream_CDLMATHOLD( np.ndarray open not None , np.ndarray high not None , np.
 
 @wraparound(False)  # turn off relative indexing from end of lists
 @boundscheck(False) # turn off bounds-checking for entire function
-def stream_CDLMAXBAR( np.ndarray high not None , np.ndarray low not None , int timeperiod=-2**31 ):
-    """ CDLMAXBAR(high, low[, timeperiod=?])
+def stream_CDLMAXBAR( np.ndarray high not None , np.ndarray low not None , np.ndarray close not None , int timeperiod=-2**31 , int usecloselow=-2**31 ):
+    """ CDLMAXBAR(high, low, close[, timeperiod=?, usecloselow=?])
 
     CDLMAXBAR: Highest bar over a specified period (Statistic Functions)
 
     Inputs:
-        prices: ['high', 'low']
+        prices: ['high', 'low', 'close']
     Parameters:
         timeperiod: 1
+        usecloselow: 0
     Outputs:
         real
     """
@@ -2290,6 +2291,7 @@ def stream_CDLMAXBAR( np.ndarray high not None , np.ndarray low not None , int t
         TA_RetCode retCode
         double* high_data
         double* low_data
+        double* close_data
         int outbegidx
         int outnbelement
         double outreal
@@ -2297,9 +2299,11 @@ def stream_CDLMAXBAR( np.ndarray high not None , np.ndarray low not None , int t
     high_data = <double*>high.data
     low = check_array(low)
     low_data = <double*>low.data
-    length = check_length2(high, low)
+    close = check_array(close)
+    close_data = <double*>close.data
+    length = check_length3(high, low, close)
     outreal = NaN
-    retCode = lib.TA_CDLMAXBAR( <int>(length) - 1 , <int>(length) - 1 , high_data , low_data , timeperiod , &outbegidx , &outnbelement , &outreal )
+    retCode = lib.TA_CDLMAXBAR( <int>(length) - 1 , <int>(length) - 1 , high_data , low_data , close_data , timeperiod , usecloselow , &outbegidx , &outnbelement , &outreal )
     _ta_check_success("TA_CDLMAXBAR", retCode)
     return outreal 
 
@@ -2993,7 +2997,6 @@ def stream_CDLWICK( np.ndarray open not None , np.ndarray high not None , np.nda
     retCode = lib.TA_CDLWICK( <int>(length) - 1 , <int>(length) - 1 , open_data , high_data , low_data , close_data , &outbegidx , &outnbelement , &outtopwick , &outbottomwick )
     _ta_check_success("TA_CDLWICK", retCode)
     return outtopwick , outbottomwick 
-
 
 @wraparound(False)  # turn off relative indexing from end of lists
 @boundscheck(False) # turn off bounds-checking for entire function

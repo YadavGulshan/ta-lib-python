@@ -558,11 +558,13 @@ cdef extern from "ta-lib/ta_func.h":
                             int    endIdx,
                             const double inHigh[],
                             const double inLow[],
+                            const double  inClose[],
                             int           optInTimePeriod,
+                            int           optInUseCloseLow,
                             int *outBegIdx,
                             int *outNBElement,
                             double        outReal[])
-    int TA_CDLMAXBAR_Lookback(int           optInTimePeriod)
+    int TA_CDLMAXBAR_Lookback(int           optInTimePeriod, int           optInUseCloseLow, )
     TA_RetCode TA_AVGXBAR(int    startIdx,
                           int    endIdx,
                           const double inHigh[],

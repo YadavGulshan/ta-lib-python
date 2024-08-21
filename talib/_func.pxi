@@ -2349,15 +2349,16 @@ def CDLMATHOLD( np.ndarray open not None , np.ndarray high not None , np.ndarray
 
 @wraparound(False)  # turn off relative indexing from end of lists
 @boundscheck(False) # turn off bounds-checking for entire function
-def CDLMAXBAR( np.ndarray high not None , np.ndarray low not None , int timeperiod=-2**31 ):
-    """ CDLMAXBAR(high, low[, timeperiod=?])
+def CDLMAXBAR( np.ndarray high not None , np.ndarray low not None , np.ndarray close not None , int timeperiod=-2**31 , int usecloselow=-2**31 ):
+    """ CDLMAXBAR(high, low, close[, timeperiod=?, usecloselow=?])
 
     CDLMAXBAR: Highest bar over a specified period (Statistic Functions)
 
     Inputs:
-        prices: ['high', 'low']
+        prices: ['high', 'low', 'close']
     Parameters:
         timeperiod: 1
+        usecloselow: 0
     Outputs:
         real
     """
@@ -2370,12 +2371,13 @@ def CDLMAXBAR( np.ndarray high not None , np.ndarray low not None , int timeperi
         np.ndarray outreal
     high = check_array(high)
     low = check_array(low)
-    length = check_length2(high, low)
-    begidx = check_begidx2(length, <double*>(high.data), <double*>(low.data))
+    close = check_array(close)
+    length = check_length3(high, low, close)
+    begidx = check_begidx3(length, <double*>(high.data), <double*>(low.data), <double*>(close.data))
     endidx = <int>length - begidx - 1
-    lookback = begidx + lib.TA_CDLMAXBAR_Lookback( timeperiod )
+    lookback = begidx + lib.TA_CDLMAXBAR_Lookback( timeperiod , usecloselow )
     outreal = make_double_array(length, lookback)
-    retCode = lib.TA_CDLMAXBAR( 0 , endidx , <double *>(high.data)+begidx , <double *>(low.data)+begidx , timeperiod , &outbegidx , &outnbelement , <double *>(outreal.data)+lookback )
+    retCode = lib.TA_CDLMAXBAR( 0 , endidx , <double *>(high.data)+begidx , <double *>(low.data)+begidx , <double *>(close.data)+begidx , timeperiod , usecloselow , &outbegidx , &outnbelement , <double *>(outreal.data)+lookback )
     _ta_check_success("TA_CDLMAXBAR", retCode)
     return outreal 
 
