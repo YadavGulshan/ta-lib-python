@@ -219,7 +219,6 @@ __function_groups__ = {
         'AVGXBAR',
         'PIVOTPOINTS',
         'XBAR',
-        'ND',
         ],
     'Pattern Recognition': [
         'CDL2CROWS',
