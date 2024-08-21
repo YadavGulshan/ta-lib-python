@@ -316,7 +316,6 @@ __function_groups__ = {
         'XBAR',
         'CDLMAXBAR',
         'CDLWICK',
-        'CDLWICKPERCENT',
     ]
 }
 
