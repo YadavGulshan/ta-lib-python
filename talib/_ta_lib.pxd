@@ -656,8 +656,6 @@ cdef extern from "ta-lib/ta_func.h":
 
 
 
-
-
     # TALIB functions for TA_SetUnstablePeriod
     TA_RetCode TA_SetUnstablePeriod(TA_FuncUnstId id, unsigned int unstablePeriod)
     unsigned int TA_GetUnstablePeriod(TA_FuncUnstId id)

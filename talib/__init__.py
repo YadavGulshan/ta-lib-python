@@ -1,4 +1,3 @@
-
 import atexit
 from itertools import chain
 from functools import wraps
@@ -45,7 +44,7 @@ if _pl_Series is not None or _pd_Series is not None:
                 _args = [arg.to_numpy().astype(float) if isinstance(arg, _pl_Series) else
                          arg for arg in args]
                 _kwds = {k: v.to_numpy().astype(float) if isinstance(v, _pl_Series) else
-                            v for k, v in kwds.items()}
+                v for k, v in kwds.items()}
 
             elif use_pd:
                 index = next(arg.index
@@ -55,7 +54,7 @@ if _pl_Series is not None or _pd_Series is not None:
                 _args = [arg.to_numpy().astype(float) if isinstance(arg, _pd_Series) else
                          arg for arg in args]
                 _kwds = {k: v.to_numpy().astype(float) if isinstance(v, _pd_Series) else
-                            v for k, v in kwds.items()}
+                v for k, v in kwds.items()}
 
             else:
                 _args = args
@@ -88,7 +87,6 @@ if _pl_Series is not None or _pd_Series is not None:
         return wrapper
 else:
     _wrapper = lambda x: x
-
 
 from ._ta_lib import (
     _ta_initialize, _ta_shutdown, MA_Type, __ta_version__,
@@ -135,7 +133,7 @@ __function_groups__ = {
         'HT_PHASOR',
         'HT_SINE',
         'HT_TRENDMODE',
-        ],
+    ],
     'Math Operators': [
         'ADD',
         'DIV',
@@ -148,7 +146,7 @@ __function_groups__ = {
         'MULT',
         'SUB',
         'SUM',
-        ],
+    ],
     'Math Transform': [
         'ACOS',
         'ASIN',
@@ -165,7 +163,7 @@ __function_groups__ = {
         'SQRT',
         'TAN',
         'TANH',
-        ],
+    ],
     'Momentum Indicators': [
         'ADX',
         'ADXR',
@@ -197,7 +195,7 @@ __function_groups__ = {
         'TRIX',
         'ULTOSC',
         'WILLR',
-        ],
+    ],
     'Overlap Studies': [
         'BBANDS',
         'DEMA',
@@ -216,10 +214,7 @@ __function_groups__ = {
         'TEMA',
         'TRIMA',
         'WMA',
-        'AVGXBAR',
-        'PIVOTPOINTS',
-        'XBAR',
-        ],
+    ],
     'Pattern Recognition': [
         'CDL2CROWS',
         'CDL3BLACKCROWS',
@@ -283,13 +278,13 @@ __function_groups__ = {
         'CDLUPSIDEGAP2CROWS',
         'CDLXSIDEGAP3METHODS',
         'FWDFILLREDBAR',
-        ],
+    ],
     'Price Transform': [
         'AVGPRICE',
         'MEDPRICE',
         'TYPPRICE',
         'WCLPRICE',
-        ],
+    ],
     'Statistic Functions': [
         'BETA',
         'CORREL',
@@ -300,24 +295,31 @@ __function_groups__ = {
         'STDDEV',
         'TSF',
         'VAR',
-        'CDLMAXBAR',
-        'CDLWICK',
-        'CDLWICKPERCENT'
-        ],
+    ],
     'Volatility Indicators': [
         'ATR',
         'NATR',
         'TRANGE',
-        'ADR'
-        ],
+    ],
     'Volume Indicators': [
         'AD',
         'ADOSC',
         'OBV',
         'PVT',
-        'VWAP'
-        ],
-    }
+    ],
+    'Custom': [
+        'ABR',
+        'ADR',
+        'VWAP',
+        'AVGXBAR',
+        'PIVOTPOINTS',
+        'XBAR',
+        'CDLMAXBAR',
+        'CDLWICK',
+        'CDLWICKPERCENT',
+    ]
+}
+
 
 def get_functions():
     """
@@ -328,6 +330,7 @@ def get_functions():
         ret.extend(__function_groups__[group])
     return ret
 
+
 def get_function_groups():
     """
     Returns a dict with keys of function-group names and values of lists
@@ -335,4 +338,6 @@ def get_function_groups():
     """
     return __function_groups__.copy()
 
-__all__ = ['get_functions', 'get_function_groups'] + __TA_FUNCTION_NAMES__ + ["stream_%s" % name for name in __TA_FUNCTION_NAMES__]
+
+__all__ = ['get_functions', 'get_function_groups'] + __TA_FUNCTION_NAMES__ + ["stream_%s" % name for name in
+                                                                              __TA_FUNCTION_NAMES__]
