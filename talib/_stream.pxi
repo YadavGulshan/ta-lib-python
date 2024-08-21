@@ -3386,13 +3386,16 @@ def stream_FLOOR( np.ndarray real not None ):
 
 @wraparound(False)  # turn off relative indexing from end of lists
 @boundscheck(False) # turn off bounds-checking for entire function
-def stream_FWDFILLREDBAR( np.ndarray open not None , np.ndarray low not None , np.ndarray close not None , np.ndarray timestamp not None ):
-    """ FWDFILLREDBAR(open, low, close, timestamp)
+def stream_FWDFILLREDBAR( np.ndarray open not None , np.ndarray low not None , np.ndarray close not None , np.ndarray timestamp not None , int timeperiod=-2**31 , int enabledailyreset=-2**31 ):
+    """ FWDFILLREDBAR(open, low, close, timestamp[, timeperiod=?, enabledailyreset=?])
 
     Forward Fill Red Bar (Pattern Recognition)
 
     Inputs:
         prices: ['open', 'low', 'close', 'timeStamp']
+    Parameters:
+        timeperiod: 30
+        enabledailyreset: 0
     Outputs:
         fwdfillredbarmaxopen
         fwdfillredbarcumlow
@@ -3422,7 +3425,7 @@ def stream_FWDFILLREDBAR( np.ndarray open not None , np.ndarray low not None , n
     outfwdfillredbarmaxopen = NaN
     outfwdfillredbarcumlow = NaN
     outfwdfillredbarnbarsago = NaN
-    retCode = lib.TA_FWDFILLREDBAR( <int>(length) - 1 , <int>(length) - 1 , open_data , low_data , close_data , timestamp_data , &outbegidx , &outnbelement , &outfwdfillredbarmaxopen , &outfwdfillredbarcumlow , &outfwdfillredbarnbarsago )
+    retCode = lib.TA_FWDFILLREDBAR( <int>(length) - 1 , <int>(length) - 1 , open_data , low_data , close_data , timestamp_data , timeperiod , enabledailyreset , &outbegidx , &outnbelement , &outfwdfillredbarmaxopen , &outfwdfillredbarcumlow , &outfwdfillredbarnbarsago )
     _ta_check_success("TA_FWDFILLREDBAR", retCode)
     return outfwdfillredbarmaxopen , outfwdfillredbarcumlow , outfwdfillredbarnbarsago 
 

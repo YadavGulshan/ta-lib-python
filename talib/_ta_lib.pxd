@@ -639,18 +639,20 @@ cdef extern from "ta-lib/ta_func.h":
                        double        outRealLowerBand3[])
     int TA_VWAP_Lookback()
 
-    TA_RetCode TA_FWDFILLREDBAR( int    startIdx,
-                                        int    endIdx,
-                                                   const double inOpen[],
-                                                   const double inLow[],
-                                                   const double inClose[],
-                                                   const double inTimestamp[],
-                                                   int          *outBegIdx,
-                                                   int          *outNBElement,
-                                                   double        outFwdFillRedBarMaxOpen[],
-                                                   double        outFwdFillRedBarCumLow[],
-                                                   double        outFwdFillRedBarNBarsAgo[] )
-    int TA_FWDFILLREDBAR_Lookback()
+    TA_RetCode TA_FWDFILLREDBAR(int    startIdx,
+                                int    endIdx,
+                                const double inOpen[],
+                                const double inLow[],
+                                const double inClose[],
+                                const double inTimestamp[],
+                                int           optInTimePeriod,
+                                int           optInEnableDailyReset,
+                                int *outBegIdx,
+                                int *outNBElement,
+                                double        outFwdFillRedBarMaxOpen[],
+                                double        outFwdFillRedBarCumLow[],
+                                double        outFwdFillRedBarNBarsAgo[])
+    int TA_FWDFILLREDBAR_Lookback(int optInTimePeriod, int optInEnableDailyReset)
 
     TA_RetCode TA_ND(int    startIdx,
                      int    endIdx,

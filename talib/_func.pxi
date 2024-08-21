@@ -3392,13 +3392,16 @@ def FLOOR( np.ndarray real not None ):
 
 @wraparound(False)  # turn off relative indexing from end of lists
 @boundscheck(False) # turn off bounds-checking for entire function
-def FWDFILLREDBAR( np.ndarray open not None , np.ndarray low not None , np.ndarray close not None , np.ndarray timestamp not None ):
-    """ FWDFILLREDBAR(open, low, close, timestamp)
+def FWDFILLREDBAR( np.ndarray open not None , np.ndarray low not None , np.ndarray close not None , np.ndarray timestamp not None , int timeperiod=-2**31 , int enabledailyreset=-2**31 ):
+    """ FWDFILLREDBAR(open, low, close, timestamp[, timeperiod=?, enabledailyreset=?])
 
     Forward Fill Red Bar (Pattern Recognition)
 
     Inputs:
         prices: ['open', 'low', 'close', 'timeStamp']
+    Parameters:
+        timeperiod: 30
+        enabledailyreset: 0
     Outputs:
         fwdfillredbarmaxopen
         fwdfillredbarcumlow
@@ -3420,11 +3423,11 @@ def FWDFILLREDBAR( np.ndarray open not None , np.ndarray low not None , np.ndarr
     length = check_length4(open, low, close, timestamp)
     begidx = check_begidx4(length, <double*>(open.data), <double*>(low.data), <double*>(close.data), <double*>(timestamp.data))
     endidx = <int>length - begidx - 1
-    lookback = begidx + lib.TA_FWDFILLREDBAR_Lookback( )
+    lookback = begidx + lib.TA_FWDFILLREDBAR_Lookback( timeperiod , enabledailyreset )
     outfwdfillredbarmaxopen = make_double_array(length, lookback)
     outfwdfillredbarcumlow = make_double_array(length, lookback)
     outfwdfillredbarnbarsago = make_double_array(length, lookback)
-    retCode = lib.TA_FWDFILLREDBAR( 0 , endidx , <double *>(open.data)+begidx , <double *>(low.data)+begidx , <double *>(close.data)+begidx , <double *>(timestamp.data)+begidx , &outbegidx , &outnbelement , <double *>(outfwdfillredbarmaxopen.data)+lookback , <double *>(outfwdfillredbarcumlow.data)+lookback , <double *>(outfwdfillredbarnbarsago.data)+lookback )
+    retCode = lib.TA_FWDFILLREDBAR( 0 , endidx , <double *>(open.data)+begidx , <double *>(low.data)+begidx , <double *>(close.data)+begidx , <double *>(timestamp.data)+begidx , timeperiod , enabledailyreset , &outbegidx , &outnbelement , <double *>(outfwdfillredbarmaxopen.data)+lookback , <double *>(outfwdfillredbarcumlow.data)+lookback , <double *>(outfwdfillredbarnbarsago.data)+lookback )
     _ta_check_success("TA_FWDFILLREDBAR", retCode)
     return outfwdfillredbarmaxopen , outfwdfillredbarcumlow , outfwdfillredbarnbarsago 
 

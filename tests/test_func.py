@@ -25,7 +25,7 @@ def get_test_data():
     df = pd.DataFrame(data)
     df['timestamp_unix'] = df['timestamp'].astype(int) // 10 ** 9
     df['date'] = df['timestamp'].dt.date
-
+    df['ordinal'] = df['timestamp'].apply(lambda x: x.toordinal())
     return df
 
 
@@ -451,8 +451,10 @@ def test_fwd_fill_red_bar_indicator():
     result = calculate_fwd_fill_red_bar_indicator(df['open'], df['low'], df['close'], df['timestamp_unix'])
     df = df.merge(result, left_index=True, right_index=True)
     TA_FFillRedBarMaxOpen, TA_FFillRedBarCumLow, TA_FFillRedBarNBarsAgo = func.FWDFILLREDBAR(
-        df['open'], df["low"], df['close'], df['timestamp_unix'].values.astype(np.int32)
+        df['open'], df["low"], df['close'], df['ordinal'].values.astype(np.double)
     )
+
+    print(df["ordinal"])
 
     assert_array_almost_equal(TA_FFillRedBarMaxOpen, df['FFillRedBarMaxOpen'])
     assert_array_almost_equal(TA_FFillRedBarCumLow, df['FFillCumLow'])
@@ -467,23 +469,22 @@ def test_fwd_fill_red_bar_indicator():
     df = df.merge(result, left_index=True, right_index=True)
 
     TA_FFillRedBarMaxOpen, TA_FFillRedBarCumLow, TA_FFillRedBarNBarsAgo = func.FWDFILLREDBAR(
-        df['M_1_OPEN'], df["M_1_LOW"], df['M_1_CLOSE'], df['timestamp_unix'].values.astype(np.int32)
+        df['M_1_OPEN'], df["M_1_LOW"], df['M_1_CLOSE'], df['ordinal']
     )
 
     assert_array_almost_equal(TA_FFillRedBarMaxOpen, df['FFillRedBarMaxOpen'])
     assert_array_almost_equal(TA_FFillRedBarCumLow, df['FFillCumLow'])
     assert_array_almost_equal(TA_FFillRedBarNBarsAgo, df['FFillRedBarNBarsAgo'])
-
     del df["FFillRedBarMaxOpen"]
     del df["FFillCumLow"]
     del df["FFillRedBarNBarsAgo"]
 
     result = calculate_fwd_fill_red_bar_indicator(df['M_15_OPEN'], df['M_15_LOW'], df['M_15_CLOSE'],
-                                                  df['timestamp_unix'])
+                                                  df['ordinal'])
     df = df.merge(result, left_index=True, right_index=True)
 
     TA_FFillRedBarMaxOpen, TA_FFillRedBarCumLow, TA_FFillRedBarNBarsAgo = func.FWDFILLREDBAR(
-        df['M_15_OPEN'], df["M_15_LOW"], df['M_15_CLOSE'], df['timestamp_unix'].values.astype(np.int32)
+        df['M_15_OPEN'], df["M_15_LOW"], df['M_15_CLOSE'], df['ordinal'].values.astype(np.int32)
     )
 
     assert_array_almost_equal(TA_FFillRedBarMaxOpen, df['FFillRedBarMaxOpen'])
@@ -504,6 +505,6 @@ def test_new_day_indicator():
 
 
 if __name__ == "__main__":
-    test_VWAP()
+    # test_VWAP()
     test_fwd_fill_red_bar_indicator()
-    test_new_day_indicator()
+    # test_new_day_indicator()
