@@ -2994,41 +2994,6 @@ def stream_CDLWICK( np.ndarray open not None , np.ndarray high not None , np.nda
     _ta_check_success("TA_CDLWICK", retCode)
     return outtopwick , outbottomwick 
 
-@wraparound(False)  # turn off relative indexing from end of lists
-@boundscheck(False) # turn off bounds-checking for entire function
-def stream_CDLWICKPERCENT( np.ndarray open not None , np.ndarray high not None , np.ndarray low not None , np.ndarray close not None ):
-    """ CDLWICKPERCENT(open, high, low, close)
-
-    CDLWICKPERCENT: Wick length of current bar as a percentage of the bar (Statistic Functions)
-
-    Inputs:
-        prices: ['open', 'high', 'low', 'close']
-    Outputs:
-        real
-    """
-    cdef:
-        np.npy_intp length
-        TA_RetCode retCode
-        double* open_data
-        double* high_data
-        double* low_data
-        double* close_data
-        int outbegidx
-        int outnbelement
-        double outreal
-    open = check_array(open)
-    open_data = <double*>open.data
-    high = check_array(high)
-    high_data = <double*>high.data
-    low = check_array(low)
-    low_data = <double*>low.data
-    close = check_array(close)
-    close_data = <double*>close.data
-    length = check_length4(open, high, low, close)
-    outreal = NaN
-    retCode = lib.TA_CDLWICKPERCENT( <int>(length) - 1 , <int>(length) - 1 , open_data , high_data , low_data , close_data , &outbegidx , &outnbelement , &outreal )
-    _ta_check_success("TA_CDLWICKPERCENT", retCode)
-    return outreal 
 
 @wraparound(False)  # turn off relative indexing from end of lists
 @boundscheck(False) # turn off bounds-checking for entire function

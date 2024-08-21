@@ -543,16 +543,6 @@ cdef extern from "ta-lib/ta_func.h":
                       int *outNBElement,
                       double        outReal[])
     int TA_IMI_Lookback(int           optInTimePeriod)
-    TA_RetCode TA_CDLWICKPERCENT(int    startIdx,
-                                 int    endIdx,
-                                 const double inOpen[],
-                                 const double inHigh[],
-                                 const double inLow[],
-                                 const double inClose[],
-                                 int *outBegIdx,
-                                 int *outNBElement,
-                                 double        outReal[])
-    int TA_CDLWICKPERCENT_Lookback()
     TA_RetCode TA_CDLWICK(int    startIdx,
                           int    endIdx,
                           const double inOpen[],
