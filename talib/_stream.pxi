@@ -3369,6 +3369,7 @@ def stream_FWDFILLREDBAR( np.ndarray open not None , np.ndarray low not None , n
         enabledailyreset: 0
     Outputs:
         fwdfillredbarmaxopen
+        fwdfillmostrecentresistance
         fwdfillredbarcumlow
         fwdfillredbarnbarsago
     """
@@ -3382,6 +3383,7 @@ def stream_FWDFILLREDBAR( np.ndarray open not None , np.ndarray low not None , n
         int outbegidx
         int outnbelement
         double outfwdfillredbarmaxopen
+        double outfwdfillmostrecentresistance
         double outfwdfillredbarcumlow
         double outfwdfillredbarnbarsago
     open = check_array(open)
@@ -3394,11 +3396,12 @@ def stream_FWDFILLREDBAR( np.ndarray open not None , np.ndarray low not None , n
     timestamp_data = <double*>timestamp.data
     length = check_length4(open, low, close, timestamp)
     outfwdfillredbarmaxopen = NaN
+    outfwdfillmostrecentresistance = NaN
     outfwdfillredbarcumlow = NaN
     outfwdfillredbarnbarsago = NaN
-    retCode = lib.TA_FWDFILLREDBAR( <int>(length) - 1 , <int>(length) - 1 , open_data , low_data , close_data , timestamp_data , timeperiod , enabledailyreset , &outbegidx , &outnbelement , &outfwdfillredbarmaxopen , &outfwdfillredbarcumlow , &outfwdfillredbarnbarsago )
+    retCode = lib.TA_FWDFILLREDBAR( <int>(length) - 1 , <int>(length) - 1 , open_data , low_data , close_data , timestamp_data , timeperiod , enabledailyreset , &outbegidx , &outnbelement , &outfwdfillredbarmaxopen , &outfwdfillmostrecentresistance , &outfwdfillredbarcumlow , &outfwdfillredbarnbarsago )
     _ta_check_success("TA_FWDFILLREDBAR", retCode)
-    return outfwdfillredbarmaxopen , outfwdfillredbarcumlow , outfwdfillredbarnbarsago 
+    return outfwdfillredbarmaxopen , outfwdfillmostrecentresistance , outfwdfillredbarcumlow , outfwdfillredbarnbarsago 
 
 @wraparound(False)  # turn off relative indexing from end of lists
 @boundscheck(False) # turn off bounds-checking for entire function

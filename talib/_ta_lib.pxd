@@ -643,6 +643,7 @@ cdef extern from "ta-lib/ta_func.h":
                                 int *outBegIdx,
                                 int *outNBElement,
                                 double        outFwdFillRedBarMaxOpen[],
+                                double        outFwdFillMostRecentResistance[],
                                 double        outFwdFillRedBarCumLow[],
                                 double        outFwdFillRedBarNBarsAgo[])
     int TA_FWDFILLREDBAR_Lookback(int optInTimePeriod, int optInEnableDailyReset)

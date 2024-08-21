@@ -3377,6 +3377,7 @@ def FWDFILLREDBAR( np.ndarray open not None , np.ndarray low not None , np.ndarr
         enabledailyreset: 0
     Outputs:
         fwdfillredbarmaxopen
+        fwdfillmostrecentresistance
         fwdfillredbarcumlow
         fwdfillredbarnbarsago
     """
@@ -3387,6 +3388,7 @@ def FWDFILLREDBAR( np.ndarray open not None , np.ndarray low not None , np.ndarr
         int outbegidx
         int outnbelement
         np.ndarray outfwdfillredbarmaxopen
+        np.ndarray outfwdfillmostrecentresistance
         np.ndarray outfwdfillredbarcumlow
         np.ndarray outfwdfillredbarnbarsago
     open = check_array(open)
@@ -3398,11 +3400,12 @@ def FWDFILLREDBAR( np.ndarray open not None , np.ndarray low not None , np.ndarr
     endidx = <int>length - begidx - 1
     lookback = begidx + lib.TA_FWDFILLREDBAR_Lookback( timeperiod , enabledailyreset )
     outfwdfillredbarmaxopen = make_double_array(length, lookback)
+    outfwdfillmostrecentresistance = make_double_array(length, lookback)
     outfwdfillredbarcumlow = make_double_array(length, lookback)
     outfwdfillredbarnbarsago = make_double_array(length, lookback)
-    retCode = lib.TA_FWDFILLREDBAR( 0 , endidx , <double *>(open.data)+begidx , <double *>(low.data)+begidx , <double *>(close.data)+begidx , <double *>(timestamp.data)+begidx , timeperiod , enabledailyreset , &outbegidx , &outnbelement , <double *>(outfwdfillredbarmaxopen.data)+lookback , <double *>(outfwdfillredbarcumlow.data)+lookback , <double *>(outfwdfillredbarnbarsago.data)+lookback )
+    retCode = lib.TA_FWDFILLREDBAR( 0 , endidx , <double *>(open.data)+begidx , <double *>(low.data)+begidx , <double *>(close.data)+begidx , <double *>(timestamp.data)+begidx , timeperiod , enabledailyreset , &outbegidx , &outnbelement , <double *>(outfwdfillredbarmaxopen.data)+lookback , <double *>(outfwdfillmostrecentresistance.data)+lookback , <double *>(outfwdfillredbarcumlow.data)+lookback , <double *>(outfwdfillredbarnbarsago.data)+lookback )
     _ta_check_success("TA_FWDFILLREDBAR", retCode)
-    return outfwdfillredbarmaxopen , outfwdfillredbarcumlow , outfwdfillredbarnbarsago 
+    return outfwdfillredbarmaxopen , outfwdfillmostrecentresistance , outfwdfillredbarcumlow , outfwdfillredbarnbarsago 
 
 @wraparound(False)  # turn off relative indexing from end of lists
 @boundscheck(False) # turn off bounds-checking for entire function
