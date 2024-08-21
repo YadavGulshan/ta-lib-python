@@ -561,7 +561,8 @@ cdef extern from "ta-lib/ta_func.h":
                           const double inClose[],
                           int *outBegIdx,
                           int *outNBElement,
-                          double        outReal[])
+                          double        outTopWick[],
+                          double        outBottomWick[])
     int TA_CDLWICK_Lookback()
     TA_RetCode TA_CDLMAXBAR(int    startIdx,
                             int    endIdx,
@@ -650,6 +651,7 @@ cdef extern from "ta-lib/ta_func.h":
                                 int *outBegIdx,
                                 int *outNBElement,
                                 double        outFwdFillRedBarMaxOpen[],
+                                double        outFwdFillMostRecentResistance[],
                                 double        outFwdFillRedBarCumLow[],
                                 double        outFwdFillRedBarNBarsAgo[])
     int TA_FWDFILLREDBAR_Lookback(int optInTimePeriod, int optInEnableDailyReset)

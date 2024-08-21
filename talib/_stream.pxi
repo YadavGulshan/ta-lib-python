@@ -2965,7 +2965,8 @@ def stream_CDLWICK( np.ndarray open not None , np.ndarray high not None , np.nda
     Inputs:
         prices: ['open', 'high', 'low', 'close']
     Outputs:
-        real
+        topwick
+        bottomwick
     """
     cdef:
         np.npy_intp length
@@ -2976,7 +2977,8 @@ def stream_CDLWICK( np.ndarray open not None , np.ndarray high not None , np.nda
         double* close_data
         int outbegidx
         int outnbelement
-        double outreal
+        double outtopwick
+        double outbottomwick
     open = check_array(open)
     open_data = <double*>open.data
     high = check_array(high)
@@ -2986,10 +2988,11 @@ def stream_CDLWICK( np.ndarray open not None , np.ndarray high not None , np.nda
     close = check_array(close)
     close_data = <double*>close.data
     length = check_length4(open, high, low, close)
-    outreal = NaN
-    retCode = lib.TA_CDLWICK( <int>(length) - 1 , <int>(length) - 1 , open_data , high_data , low_data , close_data , &outbegidx , &outnbelement , &outreal )
+    outtopwick = NaN
+    outbottomwick = NaN
+    retCode = lib.TA_CDLWICK( <int>(length) - 1 , <int>(length) - 1 , open_data , high_data , low_data , close_data , &outbegidx , &outnbelement , &outtopwick , &outbottomwick )
     _ta_check_success("TA_CDLWICK", retCode)
-    return outreal 
+    return outtopwick , outbottomwick 
 
 @wraparound(False)  # turn off relative indexing from end of lists
 @boundscheck(False) # turn off bounds-checking for entire function
@@ -3398,6 +3401,7 @@ def stream_FWDFILLREDBAR( np.ndarray open not None , np.ndarray low not None , n
         enabledailyreset: 0
     Outputs:
         fwdfillredbarmaxopen
+        fwdfillmostrecentresistance
         fwdfillredbarcumlow
         fwdfillredbarnbarsago
     """
@@ -3411,6 +3415,7 @@ def stream_FWDFILLREDBAR( np.ndarray open not None , np.ndarray low not None , n
         int outbegidx
         int outnbelement
         double outfwdfillredbarmaxopen
+        double outfwdfillmostrecentresistance
         double outfwdfillredbarcumlow
         double outfwdfillredbarnbarsago
     open = check_array(open)
@@ -3423,11 +3428,12 @@ def stream_FWDFILLREDBAR( np.ndarray open not None , np.ndarray low not None , n
     timestamp_data = <double*>timestamp.data
     length = check_length4(open, low, close, timestamp)
     outfwdfillredbarmaxopen = NaN
+    outfwdfillmostrecentresistance = NaN
     outfwdfillredbarcumlow = NaN
     outfwdfillredbarnbarsago = NaN
-    retCode = lib.TA_FWDFILLREDBAR( <int>(length) - 1 , <int>(length) - 1 , open_data , low_data , close_data , timestamp_data , timeperiod , enabledailyreset , &outbegidx , &outnbelement , &outfwdfillredbarmaxopen , &outfwdfillredbarcumlow , &outfwdfillredbarnbarsago )
+    retCode = lib.TA_FWDFILLREDBAR( <int>(length) - 1 , <int>(length) - 1 , open_data , low_data , close_data , timestamp_data , timeperiod , enabledailyreset , &outbegidx , &outnbelement , &outfwdfillredbarmaxopen , &outfwdfillmostrecentresistance , &outfwdfillredbarcumlow , &outfwdfillredbarnbarsago )
     _ta_check_success("TA_FWDFILLREDBAR", retCode)
-    return outfwdfillredbarmaxopen , outfwdfillredbarcumlow , outfwdfillredbarnbarsago 
+    return outfwdfillredbarmaxopen , outfwdfillmostrecentresistance , outfwdfillredbarcumlow , outfwdfillredbarnbarsago 
 
 @wraparound(False)  # turn off relative indexing from end of lists
 @boundscheck(False) # turn off bounds-checking for entire function

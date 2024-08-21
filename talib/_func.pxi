@@ -2969,7 +2969,8 @@ def CDLWICK( np.ndarray open not None , np.ndarray high not None , np.ndarray lo
     Inputs:
         prices: ['open', 'high', 'low', 'close']
     Outputs:
-        real
+        topwick
+        bottomwick
     """
     cdef:
         np.npy_intp length
@@ -2977,7 +2978,8 @@ def CDLWICK( np.ndarray open not None , np.ndarray high not None , np.ndarray lo
         TA_RetCode retCode
         int outbegidx
         int outnbelement
-        np.ndarray outreal
+        np.ndarray outtopwick
+        np.ndarray outbottomwick
     open = check_array(open)
     high = check_array(high)
     low = check_array(low)
@@ -2986,10 +2988,11 @@ def CDLWICK( np.ndarray open not None , np.ndarray high not None , np.ndarray lo
     begidx = check_begidx4(length, <double*>(open.data), <double*>(high.data), <double*>(low.data), <double*>(close.data))
     endidx = <int>length - begidx - 1
     lookback = begidx + lib.TA_CDLWICK_Lookback( )
-    outreal = make_double_array(length, lookback)
-    retCode = lib.TA_CDLWICK( 0 , endidx , <double *>(open.data)+begidx , <double *>(high.data)+begidx , <double *>(low.data)+begidx , <double *>(close.data)+begidx , &outbegidx , &outnbelement , <double *>(outreal.data)+lookback )
+    outtopwick = make_double_array(length, lookback)
+    outbottomwick = make_double_array(length, lookback)
+    retCode = lib.TA_CDLWICK( 0 , endidx , <double *>(open.data)+begidx , <double *>(high.data)+begidx , <double *>(low.data)+begidx , <double *>(close.data)+begidx , &outbegidx , &outnbelement , <double *>(outtopwick.data)+lookback , <double *>(outbottomwick.data)+lookback )
     _ta_check_success("TA_CDLWICK", retCode)
-    return outreal 
+    return outtopwick , outbottomwick 
 
 @wraparound(False)  # turn off relative indexing from end of lists
 @boundscheck(False) # turn off bounds-checking for entire function
@@ -3404,6 +3407,7 @@ def FWDFILLREDBAR( np.ndarray open not None , np.ndarray low not None , np.ndarr
         enabledailyreset: 0
     Outputs:
         fwdfillredbarmaxopen
+        fwdfillmostrecentresistance
         fwdfillredbarcumlow
         fwdfillredbarnbarsago
     """
@@ -3414,6 +3418,7 @@ def FWDFILLREDBAR( np.ndarray open not None , np.ndarray low not None , np.ndarr
         int outbegidx
         int outnbelement
         np.ndarray outfwdfillredbarmaxopen
+        np.ndarray outfwdfillmostrecentresistance
         np.ndarray outfwdfillredbarcumlow
         np.ndarray outfwdfillredbarnbarsago
     open = check_array(open)
@@ -3425,11 +3430,12 @@ def FWDFILLREDBAR( np.ndarray open not None , np.ndarray low not None , np.ndarr
     endidx = <int>length - begidx - 1
     lookback = begidx + lib.TA_FWDFILLREDBAR_Lookback( timeperiod , enabledailyreset )
     outfwdfillredbarmaxopen = make_double_array(length, lookback)
+    outfwdfillmostrecentresistance = make_double_array(length, lookback)
     outfwdfillredbarcumlow = make_double_array(length, lookback)
     outfwdfillredbarnbarsago = make_double_array(length, lookback)
-    retCode = lib.TA_FWDFILLREDBAR( 0 , endidx , <double *>(open.data)+begidx , <double *>(low.data)+begidx , <double *>(close.data)+begidx , <double *>(timestamp.data)+begidx , timeperiod , enabledailyreset , &outbegidx , &outnbelement , <double *>(outfwdfillredbarmaxopen.data)+lookback , <double *>(outfwdfillredbarcumlow.data)+lookback , <double *>(outfwdfillredbarnbarsago.data)+lookback )
+    retCode = lib.TA_FWDFILLREDBAR( 0 , endidx , <double *>(open.data)+begidx , <double *>(low.data)+begidx , <double *>(close.data)+begidx , <double *>(timestamp.data)+begidx , timeperiod , enabledailyreset , &outbegidx , &outnbelement , <double *>(outfwdfillredbarmaxopen.data)+lookback , <double *>(outfwdfillmostrecentresistance.data)+lookback , <double *>(outfwdfillredbarcumlow.data)+lookback , <double *>(outfwdfillredbarnbarsago.data)+lookback )
     _ta_check_success("TA_FWDFILLREDBAR", retCode)
-    return outfwdfillredbarmaxopen , outfwdfillredbarcumlow , outfwdfillredbarnbarsago 
+    return outfwdfillredbarmaxopen , outfwdfillmostrecentresistance , outfwdfillredbarcumlow , outfwdfillredbarnbarsago 
 
 @wraparound(False)  # turn off relative indexing from end of lists
 @boundscheck(False) # turn off bounds-checking for entire function
