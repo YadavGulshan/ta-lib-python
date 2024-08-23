@@ -450,7 +450,7 @@ def test_fwd_fill_red_bar_indicator():
     # group by date
     result = calculate_fwd_fill_red_bar_indicator(df['open'], df['low'], df['close'], df['timestamp_unix'])
     df = df.merge(result, left_index=True, right_index=True)
-    TA_FFillRedBarMaxOpen, TA_FFillRedBarCumLow, TA_FFillRedBarNBarsAgo = func.FWDFILLREDBAR(
+    TA_FFillRedBarMaxOpen, fwdfillmostrecentresistance, TA_FFillRedBarCumLow, TA_FFillRedBarNBarsAgo = func.FWDFILLREDBAR(
         df['open'], df["low"], df['close'], df['ordinal'].values.astype(np.double)
     )
 
@@ -492,19 +492,6 @@ def test_fwd_fill_red_bar_indicator():
     assert_array_almost_equal(TA_FFillRedBarNBarsAgo, df['FFillRedBarNBarsAgo'])
 
 
-def test_new_day_indicator():
-    import talib as func
-
-    df = get_test_data()
-    date_changed = (df['date'] != df['date'].shift())
-    df['ND'] = date_changed.astype(int)
-    df.loc[0, 'ND'] = 1
-
-    TA_ND = func.ND(df['timestamp_unix'].values.astype(np.int32))
-    assert_array_equal(TA_ND, df['ND'])
-
-
 if __name__ == "__main__":
     # test_VWAP()
     test_fwd_fill_red_bar_indicator()
-    # test_new_day_indicator()

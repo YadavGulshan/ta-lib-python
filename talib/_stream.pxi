@@ -3357,8 +3357,8 @@ def stream_FLOOR( np.ndarray real not None ):
 
 @wraparound(False)  # turn off relative indexing from end of lists
 @boundscheck(False) # turn off bounds-checking for entire function
-def stream_FWDFILLREDBAR( np.ndarray open not None , np.ndarray low not None , np.ndarray close not None , np.ndarray timestamp not None , int timeperiod=-2**31 , int enabledailyreset=-2**31 , int disablerecentresistancereinit=-2**31 ):
-    """ FWDFILLREDBAR(open, low, close, timestamp[, timeperiod=?, enabledailyreset=?, disablerecentresistancereinit=?])
+def stream_FWDFILLREDBAR( np.ndarray open not None , np.ndarray low not None , np.ndarray close not None , np.ndarray timestamp not None , int timeperiod=-2**31 , int enabledailyreset=-2**31 ):
+    """ FWDFILLREDBAR(open, low, close, timestamp[, timeperiod=?, enabledailyreset=?])
 
     Forward Fill Red Bar (Pattern Recognition)
 
@@ -3367,7 +3367,6 @@ def stream_FWDFILLREDBAR( np.ndarray open not None , np.ndarray low not None , n
     Parameters:
         timeperiod: 30
         enabledailyreset: 0
-        disablerecentresistancereinit: 0
     Outputs:
         fwdfillredbarmaxopen
         fwdfillmostrecentresistance
@@ -3400,7 +3399,7 @@ def stream_FWDFILLREDBAR( np.ndarray open not None , np.ndarray low not None , n
     outfwdfillmostrecentresistance = NaN
     outfwdfillredbarcumlow = NaN
     outfwdfillredbarnbarsago = NaN
-    retCode = lib.TA_FWDFILLREDBAR( <int>(length) - 1 , <int>(length) - 1 , open_data , low_data , close_data , timestamp_data , timeperiod , enabledailyreset , disablerecentresistancereinit , &outbegidx , &outnbelement , &outfwdfillredbarmaxopen , &outfwdfillmostrecentresistance , &outfwdfillredbarcumlow , &outfwdfillredbarnbarsago )
+    retCode = lib.TA_FWDFILLREDBAR( <int>(length) - 1 , <int>(length) - 1 , open_data , low_data , close_data , timestamp_data , timeperiod , enabledailyreset , &outbegidx , &outnbelement , &outfwdfillredbarmaxopen , &outfwdfillmostrecentresistance , &outfwdfillredbarcumlow , &outfwdfillredbarnbarsago )
     _ta_check_success("TA_FWDFILLREDBAR", retCode)
     return outfwdfillredbarmaxopen , outfwdfillmostrecentresistance , outfwdfillredbarcumlow , outfwdfillredbarnbarsago 
 
