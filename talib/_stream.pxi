@@ -5706,36 +5706,54 @@ def stream_WMA( np.ndarray real not None , int timeperiod=-2**31 ):
 
 @wraparound(False)  # turn off relative indexing from end of lists
 @boundscheck(False) # turn off bounds-checking for entire function
-def stream_XBAR( np.ndarray high not None , np.ndarray low not None , int timeperiod=-2**31 ):
-    """ XBAR(high, low[, timeperiod=?])
+def stream_XBAR( np.ndarray open not None , np.ndarray high not None , np.ndarray low not None , np.ndarray close not None , int timeperiod=-2**31 ):
+    """ XBAR(open, high, low, close[, timeperiod=?])
 
     X-Bar: High and Low lines for the last N periods (Overlap Studies)
 
     Inputs:
-        prices: ['high', 'low']
+        prices: ['open', 'high', 'low', 'close']
     Parameters:
         timeperiod: 1
     Outputs:
         xhigh
         xlow
+        xhighestopen
+        xhighestclose
+        xlowestopen
+        xlowestclose
     """
     cdef:
         np.npy_intp length
         TA_RetCode retCode
+        double* open_data
         double* high_data
         double* low_data
+        double* close_data
         int outbegidx
         int outnbelement
         double outxhigh
         double outxlow
+        double outxhighestopen
+        double outxhighestclose
+        double outxlowestopen
+        double outxlowestclose
+    open = check_array(open)
+    open_data = <double*>open.data
     high = check_array(high)
     high_data = <double*>high.data
     low = check_array(low)
     low_data = <double*>low.data
-    length = check_length2(high, low)
+    close = check_array(close)
+    close_data = <double*>close.data
+    length = check_length4(open, high, low, close)
     outxhigh = NaN
     outxlow = NaN
-    retCode = lib.TA_XBAR( <int>(length) - 1 , <int>(length) - 1 , high_data , low_data , timeperiod , &outbegidx , &outnbelement , &outxhigh , &outxlow )
+    outxhighestopen = NaN
+    outxhighestclose = NaN
+    outxlowestopen = NaN
+    outxlowestclose = NaN
+    retCode = lib.TA_XBAR( <int>(length) - 1 , <int>(length) - 1 , open_data , high_data , low_data , close_data , timeperiod , &outbegidx , &outnbelement , &outxhigh , &outxlow , &outxhighestopen , &outxhighestclose , &outxlowestopen , &outxlowestclose )
     _ta_check_success("TA_XBAR", retCode)
-    return outxhigh , outxlow 
+    return outxhigh , outxlow , outxhighestopen , outxhighestclose , outxlowestopen , outxlowestclose 
 

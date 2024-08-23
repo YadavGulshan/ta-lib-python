@@ -509,7 +509,22 @@ cdef extern from "ta-lib/ta_func.h":
     int TA_WILLR_Lookback(int optInTimePeriod)
     TA_RetCode TA_WMA(int startIdx, int endIdx, const double inReal[], int optInTimePeriod, int *outBegIdx, int *outNBElement, double outReal[])
     int TA_WMA_Lookback(int optInTimePeriod)
-    TA_RetCode TA_XBAR( int startIdx, int endIdx, const double inHigh[], const double inLow[], int optInTimePeriod, int *outBegIdx, int *outNBElement, double outXHigh[], double outXLow[])
+    TA_RetCode TA_XBAR( int    startIdx,
+                               int    endIdx,
+                                          const double inOpen[],
+                                          const double inHigh[],
+                                          const double inLow[],
+                                          const double inClose[],
+                                          int           optInTimePeriod,
+                                          int          *outBegIdx,
+                                          int          *outNBElement,
+                                          double        outXHigh[],
+                                          double        outXLow[],
+                                          double        outXHighestOpen[],
+                                          double        outXHighestClose[],
+                                          double        outXLowestOpen[],
+                                          double        outXLowestClose[] );
+
     int TA_XBAR_Lookback(int optInTimePeriod)
     TA_RetCode TA_PIVOTPOINTS(int    startIdx,
                               int    endIdx,
