@@ -2361,6 +2361,7 @@ def CDLMAXBAR( np.ndarray high not None , np.ndarray low not None , np.ndarray c
         usecloselow: 0
     Outputs:
         real
+        maxnbarsago
     """
     cdef:
         np.npy_intp length
@@ -2369,6 +2370,7 @@ def CDLMAXBAR( np.ndarray high not None , np.ndarray low not None , np.ndarray c
         int outbegidx
         int outnbelement
         np.ndarray outreal
+        np.ndarray outmaxnbarsago
     high = check_array(high)
     low = check_array(low)
     close = check_array(close)
@@ -2377,9 +2379,10 @@ def CDLMAXBAR( np.ndarray high not None , np.ndarray low not None , np.ndarray c
     endidx = <int>length - begidx - 1
     lookback = begidx + lib.TA_CDLMAXBAR_Lookback( timeperiod , usecloselow )
     outreal = make_double_array(length, lookback)
-    retCode = lib.TA_CDLMAXBAR( 0 , endidx , <double *>(high.data)+begidx , <double *>(low.data)+begidx , <double *>(close.data)+begidx , timeperiod , usecloselow , &outbegidx , &outnbelement , <double *>(outreal.data)+lookback )
+    outmaxnbarsago = make_double_array(length, lookback)
+    retCode = lib.TA_CDLMAXBAR( 0 , endidx , <double *>(high.data)+begidx , <double *>(low.data)+begidx , <double *>(close.data)+begidx , timeperiod , usecloselow , &outbegidx , &outnbelement , <double *>(outreal.data)+lookback , <double *>(outmaxnbarsago.data)+lookback )
     _ta_check_success("TA_CDLMAXBAR", retCode)
-    return outreal 
+    return outreal , outmaxnbarsago 
 
 @wraparound(False)  # turn off relative indexing from end of lists
 @boundscheck(False) # turn off bounds-checking for entire function

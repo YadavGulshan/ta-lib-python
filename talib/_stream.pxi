@@ -2285,6 +2285,7 @@ def stream_CDLMAXBAR( np.ndarray high not None , np.ndarray low not None , np.nd
         usecloselow: 0
     Outputs:
         real
+        maxnbarsago
     """
     cdef:
         np.npy_intp length
@@ -2295,6 +2296,7 @@ def stream_CDLMAXBAR( np.ndarray high not None , np.ndarray low not None , np.nd
         int outbegidx
         int outnbelement
         double outreal
+        double outmaxnbarsago
     high = check_array(high)
     high_data = <double*>high.data
     low = check_array(low)
@@ -2303,9 +2305,10 @@ def stream_CDLMAXBAR( np.ndarray high not None , np.ndarray low not None , np.nd
     close_data = <double*>close.data
     length = check_length3(high, low, close)
     outreal = NaN
-    retCode = lib.TA_CDLMAXBAR( <int>(length) - 1 , <int>(length) - 1 , high_data , low_data , close_data , timeperiod , usecloselow , &outbegidx , &outnbelement , &outreal )
+    outmaxnbarsago = NaN
+    retCode = lib.TA_CDLMAXBAR( <int>(length) - 1 , <int>(length) - 1 , high_data , low_data , close_data , timeperiod , usecloselow , &outbegidx , &outnbelement , &outreal , &outmaxnbarsago )
     _ta_check_success("TA_CDLMAXBAR", retCode)
-    return outreal 
+    return outreal , outmaxnbarsago 
 
 @wraparound(False)  # turn off relative indexing from end of lists
 @boundscheck(False) # turn off bounds-checking for entire function
