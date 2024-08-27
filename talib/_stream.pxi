@@ -5722,6 +5722,12 @@ def stream_XBAR( np.ndarray open not None , np.ndarray high not None , np.ndarra
         xhighestclose
         xlowestopen
         xlowestclose
+        xhighnbarsago
+        xlownbarsago
+        xhighestopennbarsago
+        xhighestclosenbarsago
+        xlowestopennbarsago
+        xlowestclosenbarsago
     """
     cdef:
         np.npy_intp length
@@ -5738,6 +5744,12 @@ def stream_XBAR( np.ndarray open not None , np.ndarray high not None , np.ndarra
         double outxhighestclose
         double outxlowestopen
         double outxlowestclose
+        double outxhighnbarsago
+        double outxlownbarsago
+        double outxhighestopennbarsago
+        double outxhighestclosenbarsago
+        double outxlowestopennbarsago
+        double outxlowestclosenbarsago
     open = check_array(open)
     open_data = <double*>open.data
     high = check_array(high)
@@ -5753,7 +5765,13 @@ def stream_XBAR( np.ndarray open not None , np.ndarray high not None , np.ndarra
     outxhighestclose = NaN
     outxlowestopen = NaN
     outxlowestclose = NaN
-    retCode = lib.TA_XBAR( <int>(length) - 1 , <int>(length) - 1 , open_data , high_data , low_data , close_data , timeperiod , &outbegidx , &outnbelement , &outxhigh , &outxlow , &outxhighestopen , &outxhighestclose , &outxlowestopen , &outxlowestclose )
+    outxhighnbarsago = NaN
+    outxlownbarsago = NaN
+    outxhighestopennbarsago = NaN
+    outxhighestclosenbarsago = NaN
+    outxlowestopennbarsago = NaN
+    outxlowestclosenbarsago = NaN
+    retCode = lib.TA_XBAR( <int>(length) - 1 , <int>(length) - 1 , open_data , high_data , low_data , close_data , timeperiod , &outbegidx , &outnbelement , &outxhigh , &outxlow , &outxhighestopen , &outxhighestclose , &outxlowestopen , &outxlowestclose , &outxhighnbarsago , &outxlownbarsago , &outxhighestopennbarsago , &outxhighestclosenbarsago , &outxlowestopennbarsago , &outxlowestclosenbarsago )
     _ta_check_success("TA_XBAR", retCode)
-    return outxhigh , outxlow , outxhighestopen , outxhighestclose , outxlowestopen , outxlowestclose 
+    return outxhigh , outxlow , outxhighestopen , outxhighestclose , outxlowestopen , outxlowestclose , outxhighnbarsago , outxlownbarsago , outxhighestopennbarsago , outxhighestclosenbarsago , outxlowestopennbarsago , outxlowestclosenbarsago 
 

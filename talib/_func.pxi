@@ -5806,6 +5806,12 @@ def XBAR( np.ndarray open not None , np.ndarray high not None , np.ndarray low n
         xhighestclose
         xlowestopen
         xlowestclose
+        xhighnbarsago
+        xlownbarsago
+        xhighestopennbarsago
+        xhighestclosenbarsago
+        xlowestopennbarsago
+        xlowestclosenbarsago
     """
     cdef:
         np.npy_intp length
@@ -5819,6 +5825,12 @@ def XBAR( np.ndarray open not None , np.ndarray high not None , np.ndarray low n
         np.ndarray outxhighestclose
         np.ndarray outxlowestopen
         np.ndarray outxlowestclose
+        np.ndarray outxhighnbarsago
+        np.ndarray outxlownbarsago
+        np.ndarray outxhighestopennbarsago
+        np.ndarray outxhighestclosenbarsago
+        np.ndarray outxlowestopennbarsago
+        np.ndarray outxlowestclosenbarsago
     open = check_array(open)
     high = check_array(high)
     low = check_array(low)
@@ -5833,8 +5845,14 @@ def XBAR( np.ndarray open not None , np.ndarray high not None , np.ndarray low n
     outxhighestclose = make_double_array(length, lookback)
     outxlowestopen = make_double_array(length, lookback)
     outxlowestclose = make_double_array(length, lookback)
-    retCode = lib.TA_XBAR( 0 , endidx , <double *>(open.data)+begidx , <double *>(high.data)+begidx , <double *>(low.data)+begidx , <double *>(close.data)+begidx , timeperiod , &outbegidx , &outnbelement , <double *>(outxhigh.data)+lookback , <double *>(outxlow.data)+lookback , <double *>(outxhighestopen.data)+lookback , <double *>(outxhighestclose.data)+lookback , <double *>(outxlowestopen.data)+lookback , <double *>(outxlowestclose.data)+lookback )
+    outxhighnbarsago = make_double_array(length, lookback)
+    outxlownbarsago = make_double_array(length, lookback)
+    outxhighestopennbarsago = make_double_array(length, lookback)
+    outxhighestclosenbarsago = make_double_array(length, lookback)
+    outxlowestopennbarsago = make_double_array(length, lookback)
+    outxlowestclosenbarsago = make_double_array(length, lookback)
+    retCode = lib.TA_XBAR( 0 , endidx , <double *>(open.data)+begidx , <double *>(high.data)+begidx , <double *>(low.data)+begidx , <double *>(close.data)+begidx , timeperiod , &outbegidx , &outnbelement , <double *>(outxhigh.data)+lookback , <double *>(outxlow.data)+lookback , <double *>(outxhighestopen.data)+lookback , <double *>(outxhighestclose.data)+lookback , <double *>(outxlowestopen.data)+lookback , <double *>(outxlowestclose.data)+lookback , <double *>(outxhighnbarsago.data)+lookback , <double *>(outxlownbarsago.data)+lookback , <double *>(outxhighestopennbarsago.data)+lookback , <double *>(outxhighestclosenbarsago.data)+lookback , <double *>(outxlowestopennbarsago.data)+lookback , <double *>(outxlowestclosenbarsago.data)+lookback )
     _ta_check_success("TA_XBAR", retCode)
-    return outxhigh , outxlow , outxhighestopen , outxhighestclose , outxlowestopen , outxlowestclose 
+    return outxhigh , outxlow , outxhighestopen , outxhighestclose , outxlowestopen , outxlowestclose , outxhighnbarsago , outxlownbarsago , outxhighestopennbarsago , outxhighestclosenbarsago , outxlowestopennbarsago , outxlowestclosenbarsago 
 
 __TA_FUNCTION_NAMES__ = ["ACCBANDS","ACOS","ABR","AD","ADD","ADOSC","ADX","ADXR","APO","AROON","AROONOSC","ASIN","ATAN","ATR","ADR","AVGPRICE","AVGDEV","AVGXBAR","BBANDS","BETA","BOP","CCI","CDL2CROWS","CDL3BLACKCROWS","CDL3INSIDE","CDL3LINESTRIKE","CDL3OUTSIDE","CDL3STARSINSOUTH","CDL3WHITESOLDIERS","CDLABANDONEDBABY","CDLADVANCEBLOCK","CDLBELTHOLD","CDLBREAKAWAY","CDLCLOSINGMARUBOZU","CDLCONCEALBABYSWALL","CDLCOUNTERATTACK","CDLDARKCLOUDCOVER","CDLDOJI","CDLDOJISTAR","CDLDRAGONFLYDOJI","CDLENGULFING","CDLEVENINGDOJISTAR","CDLEVENINGSTAR","CDLGAPSIDESIDEWHITE","CDLGRAVESTONEDOJI","CDLHAMMER","CDLHANGINGMAN","CDLHARAMI","CDLHARAMICROSS","CDLHIGHWAVE","CDLHIKKAKE","CDLHIKKAKEMOD","CDLHOMINGPIGEON","CDLIDENTICAL3CROWS","CDLINNECK","CDLINVERTEDHAMMER","CDLKICKING","CDLKICKINGBYLENGTH","CDLLADDERBOTTOM","CDLLONGLEGGEDDOJI","CDLLONGLINE","CDLMARUBOZU","CDLMATCHINGLOW","CDLMATHOLD","CDLMAXBAR","CDLMORNINGDOJISTAR","CDLMORNINGSTAR","CDLONNECK","CDLPIERCING","CDLRICKSHAWMAN","CDLRISEFALL3METHODS","CDLSEPARATINGLINES","CDLSHOOTINGSTAR","CDLSHORTLINE","CDLSPINNINGTOP","CDLSTALLEDPATTERN","CDLSTICKSANDWICH","CDLTAKURI","CDLTASUKIGAP","CDLTHRUSTING","CDLTRISTAR","CDLUNIQUE3RIVER","CDLUPSIDEGAP2CROWS","CDLWICK","CDLXSIDEGAP3METHODS","CEIL","CMO","CORREL","COS","COSH","DEMA","DIV","DX","EMA","EXP","FLOOR","FWDFILLREDBAR","HT_DCPERIOD","HT_DCPHASE","HT_PHASOR","HT_SINE","HT_TRENDLINE","HT_TRENDMODE","IMI","KAMA","LINEARREG","LINEARREG_ANGLE","LINEARREG_INTERCEPT","LINEARREG_SLOPE","LN","LOG10","MA","MACD","MACDEXT","MACDFIX","MAMA","MAVP","MAX","MAXINDEX","MEDPRICE","MFI","MIDPOINT","MIDPRICE","MIN","MININDEX","MINMAX","MINMAXINDEX","MINUS_DI","MINUS_DM","MOM","MULT","NATR","OBV","PLUS_DI","PLUS_DM","PPO","PVT","PIVOTPOINTS","ROC","ROCP","ROCR","ROCR100","RSI","SAR","SAREXT","SIN","SINH","SMA","SQRT","STDDEV","STOCH","STOCHF","STOCHRSI","SUB","SUM","T3","TAN","TANH","TEMA","TRANGE","TRIMA","TRIX","TSF","TYPPRICE","ULTOSC","VAR","VWAP","WCLPRICE","WILLR","WMA","XBAR"]
